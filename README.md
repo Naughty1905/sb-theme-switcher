@@ -346,7 +346,7 @@ function MyComponent() {
 ## Compatibility
 
 - **Storybook**: 7.x, 8.x, 9.x, 10.x
-- **React**: 16.8+, 17.x, 18.x
+- **React**: 16.8+, 17.x, 18.x, 19.x
 - **TypeScript**: 5.x
 
 ## Troubleshooting
