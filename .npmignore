@@ -1,0 +1,23 @@
+# Source files
+src/
+examples/
+.github/
+
+# Config files
+tsconfig.json
+tsup.config.ts
+.eslintrc.json
+.prettierrc
+
+# Development files
+*.log
+.DS_Store
+yarn.lock
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
