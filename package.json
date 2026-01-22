@@ -1,6 +1,6 @@
 {
   "name": "sb-theme-switcher",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "description": "A Storybook addon for switching between multiple themes with support for toggle (2 themes) and dropdown (3+ themes)",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -38,7 +38,9 @@
     "lint": "eslint src --ext .ts,.tsx",
     "prepublishOnly": "yarn build",
     "example": "cd examples/basic && yarn storybook",
-    "build-example": "cd examples/basic && yarn build-storybook"
+    "build-example": "cd examples/basic && yarn build-storybook",
+    "publish": "npm publish",
+    "publish:beta": "npm publish --tag beta"
   },
   "keywords": [
     "storybook",

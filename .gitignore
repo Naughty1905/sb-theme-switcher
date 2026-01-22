@@ -27,6 +27,9 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# NPM
+.npmrc
+
 # Testing
 coverage
 .nyc_output
