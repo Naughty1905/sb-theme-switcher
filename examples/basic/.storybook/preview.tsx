@@ -4,27 +4,6 @@ import { DocsContainer } from 'sb-theme-switcher';
 import { lightTheme, darkTheme, blueTheme } from './themes';
 import './preview.css';
 
-const themes = [
-  {
-    id: 'light',
-    title: 'Light',
-    class: 'light-theme',
-    storybookTheme: lightTheme
-  },
-  {
-    id: 'dark',
-    title: 'Dark',
-    class: 'dark-theme',
-    storybookTheme: darkTheme
-  },
-  {
-    id: 'blue',
-    title: 'Blue Ocean',
-    class: 'blue-theme',
-    storybookTheme: blueTheme
-  }
-];
-
 const preview: Preview = {
   parameters: {
     controls: {
@@ -33,8 +12,59 @@ const preview: Preview = {
         date: /Date$/i
       }
     },
+    'sb-theme-switcher': {
+      themes: [
+        {
+          id: 'light',
+          title: 'Light',
+          class: 'light-theme',
+          color: '#ffffff',
+          storybookTheme: lightTheme
+        },
+        {
+          id: 'dark',
+          title: 'Dark',
+          class: 'dark-theme',
+          color: '#1a1a1a',
+          storybookTheme: darkTheme
+        },
+        {
+          id: 'blue',
+          title: 'Blue Ocean',
+          class: 'blue-theme',
+          color: '#167FFB',
+          storybookTheme: blueTheme
+        }
+      ],
+      defaultTheme: 'light',
+      storageKey: 'example-theme'
+    },
     docs: {
-      container: (props) => <DocsContainer {...props} themes={themes} />
+      container: (props) => (
+        <DocsContainer
+          {...props}
+          themes={[
+            {
+              id: 'light',
+              title: 'Light',
+              class: 'light-theme',
+              storybookTheme: lightTheme
+            },
+            {
+              id: 'dark',
+              title: 'Dark',
+              class: 'dark-theme',
+              storybookTheme: darkTheme
+            },
+            {
+              id: 'blue',
+              title: 'Blue Ocean',
+              class: 'blue-theme',
+              storybookTheme: blueTheme
+            }
+          ]}
+        />
+      )
     }
   }
 };

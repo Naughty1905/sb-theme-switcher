@@ -16,22 +16,17 @@ This example demonstrates how to use `sb-theme-switcher` in a Storybook project.
 From the root of the repository:
 
 ```bash
-# Install dependencies
-cd examples/basic
-yarn install
-
-# Link the addon
-cd ../..
+# Install dependencies and build
 yarn build
-cd examples/basic
 
-# Start Storybook
-yarn storybook
+# Run example
+yarn example
 ```
 
-Or from the example directory:
+Or manually:
 
 ```bash
+cd examples/basic
 yarn install
 yarn storybook
 ```
@@ -43,10 +38,10 @@ yarn storybook
 3. **Open multiple tabs** and see theme sync across them
 4. **Inspect components** to see CSS variables in action
 
-## Configuration
+## Configuration Files
 
-See `.storybook/main.ts` for the addon configuration with three themes.
-
-See `.storybook/preview.tsx` for the Docs container setup.
-
-See `.storybook/preview.css` for theme CSS variables.
+- `.storybook/main.ts` - Addon registration
+- `.storybook/manager-head.html` - Theme configuration and CSS fixes for Storybook UI
+- `.storybook/preview.tsx` - Docs container setup
+- `.storybook/preview.css` - Theme CSS variables for your components
+- `.storybook/themes.ts` - Storybook theme objects

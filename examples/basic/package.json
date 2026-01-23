@@ -1,6 +1,6 @@
 {
   "name": "sb-theme-switcher-example",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "storybook": "storybook dev -p 6006",

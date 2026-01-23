@@ -10,27 +10,27 @@ export const lightTheme = create({
 
   // UI
   appBg: '#FFFFFF',
-  appContentBg: '#F6F9FC',
-  appBorderColor: '#E0E0E0',
+  appContentBg: '#EDEEEF',
+  appBorderColor: '#D6DADD',
   appBorderRadius: 4,
 
   // Typography
-  fontBase: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontCode: 'monospace',
+  fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  fontCode: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
 
   // Text colors
-  textColor: '#333333',
+  textColor: '#001739',
   textInverseColor: '#FFFFFF',
 
   // Toolbar
-  barTextColor: '#666666',
+  barTextColor: '#40515E',
   barSelectedColor: '#167FFB',
-  barBg: '#FFFFFF',
+  barBg: '#EDEEEF',
 
   // Form colors
   inputBg: '#FFFFFF',
-  inputBorder: '#E0E0E0',
-  inputTextColor: '#333333',
+  inputBorder: '#CCD1D4',
+  inputTextColor: '#909090',
   inputBorderRadius: 4
 });
 
@@ -43,27 +43,27 @@ export const darkTheme = create({
   colorSecondary: '#2A8CFF',
 
   // UI
-  appBg: '#1a1a1a',
-  appContentBg: '#2d2d2d',
-  appBorderColor: '#3d3d3d',
+  appBg: '#455161',
+  appContentBg: '#455161',
+  appBorderColor: '#6C7581',
   appBorderRadius: 4,
 
   // Typography
-  fontBase: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontCode: 'monospace',
+  fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  fontCode: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
 
   // Text colors
   textColor: '#FFFFFF',
-  textInverseColor: '#333333',
+  textInverseColor: '#001739',
 
   // Toolbar
-  barTextColor: '#CCCCCC',
+  barTextColor: '#FFFFFF',
   barSelectedColor: '#2A8CFF',
-  barBg: '#1a1a1a',
+  barBg: '#455161',
 
   // Form colors
-  inputBg: '#2d2d2d',
-  inputBorder: '#3d3d3d',
+  inputBg: '#455161',
+  inputBorder: '#7A879B',
   inputTextColor: '#FFFFFF',
   inputBorderRadius: 4
 });
@@ -73,31 +73,31 @@ export const blueTheme = create({
   brandTitle: 'Theme Switcher Demo',
   brandUrl: 'https://github.com/Naughty1905/sb-theme-switcher',
   
-  colorPrimary: '#00D9FF',
-  colorSecondary: '#00D9FF',
+  colorPrimary: '#29B6F6',
+  colorSecondary: '#29B6F6',
 
   // UI
-  appBg: '#0A1929',
-  appContentBg: '#132F4C',
-  appBorderColor: '#1E4976',
+  appBg: '#3c4854',
+  appContentBg: '#3c4854',
+  appBorderColor: '#526172',
   appBorderRadius: 4,
 
   // Typography
-  fontBase: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontCode: 'monospace',
+  fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  fontCode: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
 
   // Text colors
-  textColor: '#E3F2FD',
-  textInverseColor: '#0A1929',
+  textColor: '#FFFFFF',
+  textInverseColor: '#001E3C',
 
   // Toolbar
-  barTextColor: '#B2D4FF',
-  barSelectedColor: '#00D9FF',
-  barBg: '#0A1929',
+  barTextColor: '#FFFFFF',
+  barSelectedColor: '#29B6F6',
+  barBg: '#3c4854',
 
   // Form colors
-  inputBg: '#132F4C',
-  inputBorder: '#1E4976',
-  inputTextColor: '#E3F2FD',
+  inputBg: '#3c4854',
+  inputBorder: '#526172',
+  inputTextColor: '#FFFFFF',
   inputBorderRadius: 4
 });

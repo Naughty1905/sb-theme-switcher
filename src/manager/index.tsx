@@ -5,36 +5,17 @@ import type { ThemeSwitcherOptions, Theme } from '../types';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { getInitialTheme, applyManagerTheme, applyPreviewTheme, observePreviewIframe } from './utils';
 
-// Get addon options from Storybook config
 const getAddonOptions = (): ThemeSwitcherOptions | null => {
   try {
-    const config = addons.getConfig();
-    return (config as any)?.[PARAM_KEY] || null;
+    if (typeof window !== 'undefined' && (window as any).__SB_THEME_SWITCHER_OPTIONS__) {
+      return (window as any).__SB_THEME_SWITCHER_OPTIONS__;
+    }
+    return null;
   } catch {
     return null;
   }
 };
 
-// Initialize theme on load
-const initializeTheme = (options: ThemeSwitcherOptions | null) => {
-  if (!options || !options.themes || options.themes.length < 2) {
-    console.warn('[sb-theme-switcher] Invalid configuration. At least 2 themes are required.');
-    return;
-  }
-
-  const storageKey = options.storageKey || DEFAULT_STORAGE_KEY;
-  const initialTheme = getInitialTheme(options.themes, storageKey, options.defaultTheme);
-  
-  applyManagerTheme(initialTheme);
-  
-  // Apply to preview with a delay to ensure iframe is loaded
-  setTimeout(() => applyPreviewTheme(initialTheme.class, storageKey), 1000);
-  
-  // Observe iframe changes
-  observePreviewIframe(storageKey, options.themes);
-};
-
-// Toolbar component wrapper
 const ThemeSwitcherTool = () => {
   const options = getAddonOptions();
   
@@ -47,7 +28,6 @@ const ThemeSwitcherTool = () => {
     getInitialTheme(options.themes, storageKey, options.defaultTheme)
   );
 
-  // Sync with localStorage changes (for multi-tab support)
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === storageKey && e.newValue) {
@@ -74,14 +54,17 @@ const ThemeSwitcherTool = () => {
   );
 };
 
-// Register addon
-addons.register(ADDON_ID, () => {
-  const options = getAddonOptions();
+const options = getAddonOptions();
+if (options && options.themes && options.themes.length >= 2) {
+  const storageKey = options.storageKey || DEFAULT_STORAGE_KEY;
+  const initialTheme = getInitialTheme(options.themes, storageKey, options.defaultTheme);
   
-  // Initialize theme
-  initializeTheme(options);
+  applyManagerTheme(initialTheme);
+  setTimeout(() => applyPreviewTheme(initialTheme.class, storageKey), 1000);
+  observePreviewIframe(storageKey, options.themes);
+}
 
-  // Add toolbar button
+addons.register(ADDON_ID, () => {
   addons.add(TOOL_ID, {
     type: types.TOOL,
     title: 'Переключить тему',

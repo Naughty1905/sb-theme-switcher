@@ -12,7 +12,7 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
     clean: true,
-    external: ['react', 'react-dom', 'storybook'],
+    external: ['react', 'react-dom', 'storybook', '@storybook/manager-api', '@storybook/preview-api', '@storybook/theming'],
     esbuildOptions(options) {
       options.banner = {
         js: '"use client";'

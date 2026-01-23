@@ -1,0 +1,143 @@
+<style>
+  /* 
+    CSS fixes for Storybook UI elements that don't always respect theme colors.
+    You can remove any rules you don't need for your project.
+  */
+
+  /* Fix toolbar icons color - Storybook doesn't always apply barTextColor correctly */
+  [data-theme='light-theme'] .sb-bar button,
+  [data-theme='light-theme'] .sb-bar button svg {
+    color: #40515E !important;
+  }
+
+  [data-theme='dark-theme'] .sb-bar button,
+  [data-theme='dark-theme'] .sb-bar button svg,
+  [data-theme='dark-theme'] .sidebar-header button,
+  [data-theme='dark-theme'] .sidebar-header svg,
+  [data-theme='dark-theme'] .search-field svg,
+  [data-theme='dark-theme'] .sidebar-subheading,
+  [data-theme='dark-theme'] .sidebar-subheading button,
+  [data-theme='dark-theme'] .sidebar-subheading svg {
+    color: #FFFFFF !important;
+  }
+
+  /* Blue Ocean theme: cyan tinted icons */
+  [data-theme='blue-theme'] .sb-bar button,
+  [data-theme='blue-theme'] .sb-bar button svg,
+  [data-theme='blue-theme'] .sidebar-header button,
+  [data-theme='blue-theme'] .sidebar-header svg,
+  [data-theme='blue-theme'] .search-field svg,
+  [data-theme='blue-theme'] .sidebar-subheading,
+  [data-theme='blue-theme'] .sidebar-subheading button,
+  [data-theme='blue-theme'] .sidebar-subheading svg {
+    color: #81D4FA !important;
+  }
+
+  /* Only fix for control buttons in dark themes - everything else should work via storybookTheme */
+  html[data-theme='dark-theme'] .docblock-argstable button,
+  html[data-theme='blue-theme'] .docblock-argstable button {
+    background: rgb(27, 28, 29) !important;
+    color: rgb(255, 255, 255) !important;
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset !important;
+    border: none !important;
+  }
+
+  html[data-theme='dark-theme'] .docblock-argstable button:hover,
+  html[data-theme='blue-theme'] .docblock-argstable button:hover {
+    background: rgb(40, 41, 42) !important;
+  }
+</style>
+
+<script>
+  // Pass addon options to manager
+  window.__SB_THEME_SWITCHER_OPTIONS__ = {
+    themes: [
+      {
+        id: 'light',
+        title: 'Light',
+        class: 'light-theme',
+        color: '#FFFFFF',
+        storybookTheme: {
+          base: 'light',
+          brandTitle: 'Theme Switcher Demo',
+          brandUrl: 'https://github.com/Naughty1905/sb-theme-switcher',
+          colorPrimary: '#167FFB',
+          colorSecondary: '#167FFB',
+          appBg: '#FFFFFF',
+          appContentBg: '#EDEEEF',
+          appBorderColor: '#D6DADD',
+          appBorderRadius: 4,
+          fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+          fontCode: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+          textColor: '#001739',
+          textInverseColor: '#FFFFFF',
+          barTextColor: '#40515E',
+          barSelectedColor: '#167FFB',
+          barBg: '#EDEEEF',
+          inputBg: '#FFFFFF',
+          inputBorder: '#CCD1D4',
+          inputTextColor: '#909090',
+          inputBorderRadius: 4
+        }
+      },
+      {
+        id: 'dark',
+        title: 'Dark',
+        class: 'dark-theme',
+        color: '#455161',
+        storybookTheme: {
+          base: 'dark',
+          brandTitle: 'Theme Switcher Demo',
+          brandUrl: 'https://github.com/Naughty1905/sb-theme-switcher',
+          colorPrimary: '#2A8CFF',
+          colorSecondary: '#2A8CFF',
+          appBg: '#455161',
+          appContentBg: '#455161',
+          appBorderColor: '#6C7581',
+          appBorderRadius: 4,
+          fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+          fontCode: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+          textColor: '#FFFFFF',
+          textInverseColor: '#001739',
+          barTextColor: '#FFFFFF',
+          barSelectedColor: '#2A8CFF',
+          barBg: '#455161',
+          inputBg: '#455161',
+          inputBorder: '#7A879B',
+          inputTextColor: '#FFFFFF',
+          inputBorderRadius: 4
+        }
+      },
+      {
+        id: 'blue',
+        title: 'Blue Ocean',
+        class: 'blue-theme',
+        color: '#29B6F6',
+        storybookTheme: {
+          base: 'dark',
+          brandTitle: 'Theme Switcher Demo',
+          brandUrl: 'https://github.com/Naughty1905/sb-theme-switcher',
+          colorPrimary: '#29B6F6',
+          colorSecondary: '#29B6F6',
+          appBg: '#3c4854',
+          appContentBg: '#3c4854',
+          appBorderColor: '#526172',
+          appBorderRadius: 4,
+          fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+          fontCode: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+          textColor: '#FFFFFF',
+          textInverseColor: '#001E3C',
+          barTextColor: '#FFFFFF',
+          barSelectedColor: '#29B6F6',
+          barBg: '#3c4854',
+          inputBg: '#3c4854',
+          inputBorder: '#526172',
+          inputTextColor: '#FFFFFF',
+          inputBorderRadius: 4
+        }
+      }
+    ],
+    defaultTheme: 'light',
+    storageKey: 'example-theme'
+  };
+</script>

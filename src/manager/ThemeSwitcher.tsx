@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import { IconButton, WithTooltip, TooltipLinkList } from 'storybook/internal/components';
 import type { Theme } from '../types';
 import { applyManagerTheme, applyPreviewTheme } from './utils';
 import { SunIcon, MoonIcon } from './icons';
@@ -11,9 +12,12 @@ interface ThemeSwitcherProps {
 }
 
 /**
- * Toggle button for 2 themes
+ * Toggle button for 2 themes using native button (no border, like ds-2.0)
  */
 const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, storageKey, onThemeChange }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+
   const handleToggle = useCallback(() => {
     const currentIndex = themes.findIndex(t => t.id === currentTheme.id);
     const nextTheme = themes[(currentIndex + 1) % themes.length];
@@ -27,7 +31,6 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, stora
   const isDark = currentTheme.storybookTheme.base === 'dark';
   const toggleLabel = `Переключить на ${isDark ? 'светлую' : 'темную'} тему`;
 
-  // Custom icon or default
   const IconComponent = currentTheme.icon 
     ? (typeof currentTheme.icon === 'string' 
         ? () => <span dangerouslySetInnerHTML={{ __html: currentTheme.icon as string }} />
@@ -40,8 +43,15 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, stora
       title={toggleLabel}
       onClick={handleToggle}
       aria-label={toggleLabel}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsPressed(false);
+      }}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
       style={{
-        background: 'transparent',
+        background: isHovered ? (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)') : 'transparent',
         border: 'none',
         cursor: 'pointer',
         padding: '6px',
@@ -54,23 +64,10 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, stora
         transition: 'background 0.2s ease, transform 0.1s ease, opacity 0.2s ease',
         height: '28px',
         minWidth: '28px',
-        WebkitAppearance: 'none',
-        MozAppearance: 'none',
-        opacity: 1
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.background = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
-        e.currentTarget.style.opacity = '0.8';
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = 'transparent';
-        e.currentTarget.style.opacity = '1';
-      }}
-      onMouseDown={e => {
-        e.currentTarget.style.transform = 'scale(0.9)';
-      }}
-      onMouseUp={e => {
-        e.currentTarget.style.transform = 'scale(1)';
+        opacity: isHovered ? 0.8 : 1,
+        transform: isPressed ? 'scale(0.9)' : 'scale(1)',
+        WebkitAppearance: 'none' as const,
+        MozAppearance: 'none' as const,
       }}
     >
       <IconComponent />
@@ -79,67 +76,49 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, stora
 };
 
 /**
- * Dropdown for 3+ themes
+ * Dropdown for 3+ themes using Storybook's built-in components
  */
 const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, storageKey, onThemeChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
   const handleThemeSelect = useCallback((theme: Theme) => {
     localStorage.setItem(storageKey, theme.id);
     applyManagerTheme(theme);
     applyPreviewTheme(theme.class, storageKey);
     onThemeChange(theme);
-    setIsOpen(false);
   }, [storageKey, onThemeChange]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
-
-  const isDark = currentTheme.storybookTheme.base === 'dark';
+  const links = themes.map(theme => ({
+    id: theme.id,
+    title: theme.title,
+    active: theme.id === currentTheme.id,
+    onClick: () => handleThemeSelect(theme),
+    left: theme.color ? (
+      <span
+        style={{
+          width: '14px',
+          height: '14px',
+          borderRadius: '50%',
+          backgroundColor: theme.color,
+          border: theme.storybookTheme.base === 'dark' 
+            ? '1px solid rgba(255, 255, 255, 0.3)' 
+            : '1px solid rgba(0, 0, 0, 0.2)',
+          display: 'inline-block',
+        }}
+      />
+    ) : undefined,
+    right: theme.id === currentTheme.id ? <span style={{ marginLeft: '8px' }}>✓</span> : undefined
+  }));
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative' }}>
-      <button
+    <WithTooltip
+      placement="bottom"
+      trigger="click"
+      closeOnOutsideClick
+      tooltip={<TooltipLinkList links={links} />}
+    >
+      <IconButton
+        key="theme-dropdown"
         title="Выбрать тему"
-        onClick={() => setIsOpen(!isOpen)}
         aria-label="Выбрать тему"
-        aria-expanded={isOpen}
-        style={{
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          padding: '6px 8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '4px',
-          color: 'inherit',
-          outline: 'none',
-          borderRadius: '4px',
-          transition: 'background 0.2s ease',
-          height: '28px',
-          minWidth: '28px',
-          fontSize: '12px',
-          fontWeight: 500
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.background = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.background = 'transparent';
-        }}
       >
         {currentTheme.color && (
           <span
@@ -148,84 +127,17 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, sto
               height: '12px',
               borderRadius: '50%',
               backgroundColor: currentTheme.color,
-              border: '1px solid rgba(0, 0, 0, 0.1)'
+              border: currentTheme.storybookTheme.base === 'dark'
+                ? '1px solid rgba(255, 255, 255, 0.4)'
+                : '1px solid rgba(0, 0, 0, 0.2)',
+              display: 'inline-block',
+              marginRight: '4px'
             }}
           />
         )}
-        <span>{currentTheme.title}</span>
-        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor">
-          <path d="M4 5L1 2h6L4 5z" />
-        </svg>
-      </button>
-
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            right: 0,
-            marginTop: '4px',
-            background: isDark ? '#2e3438' : '#ffffff',
-            border: `1px solid ${isDark ? '#4a5159' : '#e0e0e0'}`,
-            borderRadius: '4px',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            minWidth: '150px',
-            zIndex: 1000,
-            overflow: 'hidden'
-          }}
-        >
-          {themes.map(theme => (
-            <button
-              key={theme.id}
-              onClick={() => handleThemeSelect(theme)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                border: 'none',
-                background: theme.id === currentTheme.id 
-                  ? (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')
-                  : 'transparent',
-                color: 'inherit',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '13px',
-                textAlign: 'left',
-                transition: 'background 0.2s ease'
-              }}
-              onMouseEnter={e => {
-                if (theme.id !== currentTheme.id) {
-                  e.currentTarget.style.background = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (theme.id !== currentTheme.id) {
-                  e.currentTarget.style.background = 'transparent';
-                }
-              }}
-            >
-              {theme.color && (
-                <span
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '50%',
-                    backgroundColor: theme.color,
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
-                    flexShrink: 0
-                  }}
-                />
-              )}
-              <span>{theme.title}</span>
-              {theme.id === currentTheme.id && (
-                <span style={{ marginLeft: 'auto', fontSize: '16px' }}>✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+        {currentTheme.title}
+      </IconButton>
+    </WithTooltip>
   );
 };
 
@@ -234,8 +146,13 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, sto
  */
 export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = (props) => {
   const { themes } = props;
+  const [, forceUpdate] = useState({});
 
-  if (themes.length === 2) {
+  React.useEffect(() => {
+    forceUpdate({});
+  }, [themes.length]);
+
+  if (themes.length <= 2) {
     return <ThemeToggle {...props} />;
   }
 

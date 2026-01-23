@@ -103,6 +103,13 @@ const config: StorybookConfig = {
             class: 'dark-theme',
             color: '#1a1a1a',
             storybookTheme: darkTheme
+          },
+          {
+            id: 'blue',
+            title: 'Синяя',
+            class: 'blue-theme',
+            color: '#167FFB',
+            storybookTheme: blueTheme
           }
         ],
         defaultTheme: 'light',
