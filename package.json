@@ -39,8 +39,8 @@
     "prepublishOnly": "yarn build",
     "example": "yarn build && cd examples/basic && yarn storybook",
     "build-example": "cd examples/basic && yarn build-storybook",
-    "publish": "npm publish",
-    "publish:beta": "npm publish --tag beta"
+    "packing": "npm publish",
+    "packing:beta": "npm publish --tag beta"
   },
   "keywords": [
     "storybook",
