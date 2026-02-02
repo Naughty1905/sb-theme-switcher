@@ -23,14 +23,19 @@ export const DocsContainer: FC<DocsContainerProps> = ({ children, themes, ...pro
 
   const DocsContainerComponent = useMemo(() => {
     try {
-      const blocks = require('storybook/internal/blocks');
-      return blocks.DocsContainer;
+      const { DocsContainer } = require('@storybook/addon-docs');
+      return DocsContainer;
     } catch {
       try {
-        const blocks = require('@storybook/blocks');
+        const blocks = require('storybook/internal/blocks');
         return blocks.DocsContainer;
       } catch {
-        return ({ children: c }: any) => <div data-theme={currentThemeClass}>{c}</div>;
+        try {
+          const blocks = require('@storybook/blocks');
+          return blocks.DocsContainer;
+        } catch {
+          return ({ children: c }: any) => <div data-theme={currentThemeClass}>{c}</div>;
+        }
       }
     }
   }, [currentThemeClass]);
