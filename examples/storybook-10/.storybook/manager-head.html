@@ -1,0 +1,46 @@
+<style>
+  /*
+    Optional CSS fixes for Storybook UI elements that don't always respect theme colors.
+    Remove any rules you don't need for your project.
+  */
+
+  [data-theme='light-theme'] .sb-bar button,
+  [data-theme='light-theme'] .sb-bar button svg {
+    color: #40515E !important;
+  }
+
+  [data-theme='dark-theme'] .sb-bar button,
+  [data-theme='dark-theme'] .sb-bar button svg,
+  [data-theme='dark-theme'] .sidebar-header button,
+  [data-theme='dark-theme'] .sidebar-header svg,
+  [data-theme='dark-theme'] .search-field svg,
+  [data-theme='dark-theme'] .sidebar-subheading,
+  [data-theme='dark-theme'] .sidebar-subheading button,
+  [data-theme='dark-theme'] .sidebar-subheading svg {
+    color: #FFFFFF !important;
+  }
+
+  [data-theme='blue-theme'] .sb-bar button,
+  [data-theme='blue-theme'] .sb-bar button svg,
+  [data-theme='blue-theme'] .sidebar-header button,
+  [data-theme='blue-theme'] .sidebar-header svg,
+  [data-theme='blue-theme'] .search-field svg,
+  [data-theme='blue-theme'] .sidebar-subheading,
+  [data-theme='blue-theme'] .sidebar-subheading button,
+  [data-theme='blue-theme'] .sidebar-subheading svg {
+    color: #81D4FA !important;
+  }
+
+  html[data-theme='dark-theme'] .docblock-argstable button,
+  html[data-theme='blue-theme'] .docblock-argstable button {
+    background: rgb(27, 28, 29) !important;
+    color: rgb(255, 255, 255) !important;
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset !important;
+    border: none !important;
+  }
+
+  html[data-theme='dark-theme'] .docblock-argstable button:hover,
+  html[data-theme='blue-theme'] .docblock-argstable button:hover {
+    background: rgb(40, 41, 42) !important;
+  }
+</style>

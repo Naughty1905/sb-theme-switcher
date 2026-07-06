@@ -1,0 +1,39 @@
+/* Light Theme */
+[data-theme='light-theme'] {
+  --background: #ffffff;
+  --surface: #EDEEEF;
+  --text-primary: #001739;
+  --text-secondary: #40515E;
+  --border: #D6DADD;
+  --accent: #167ffb;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme - matching ds-2.0 */
+[data-theme='dark-theme'] {
+  --background: #455161;
+  --surface: #475363;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b9bf;
+  --border: #6C7581;
+  --accent: #2a8cff;
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Blue Ocean Theme - lighter than dark */
+[data-theme='blue-theme'] {
+  --background: #526172;
+  --surface: #5e6d7e;
+  --text-primary: #E7EBF0;
+  --text-secondary: #B2BAC2;
+  --border: #697889;
+  --accent: #29B6F6;
+  --shadow: rgba(0, 0, 0, 0.6);
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

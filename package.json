@@ -11,11 +11,6 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./manager": {
-      "types": "./dist/manager.d.ts",
-      "import": "./dist/manager.mjs",
-      "require": "./dist/manager.js"
-    },
     "./preview": {
       "types": "./dist/preview.d.ts",
       "import": "./dist/preview.mjs",
@@ -32,13 +27,15 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/patch-manager-sb8.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "prepublishOnly": "yarn build",
-    "example": "yarn build && cd examples/basic && yarn storybook",
-    "build-example": "cd examples/basic && yarn build-storybook",
+    "example": "yarn build && cd examples/storybook-10 && yarn storybook",
+    "example:sb9": "yarn build && cd examples/storybook-9 && yarn storybook",
+    "example:sb8": "yarn build && cd examples/storybook-8 && yarn storybook",
+    "build-example": "cd examples/storybook-10 && yarn build-storybook",
     "packing": "npm publish",
     "packing:beta": "npm publish --tag beta"
   },
@@ -61,10 +58,10 @@
   },
   "homepage": "https://github.com/Naughty1905/sb-theme-switcher#readme",
   "peerDependencies": {
-    "@storybook/addon-docs": "^9.0.0 || ^10.0.0",
+    "@storybook/addon-docs": "^8.0.0 || ^9.0.0 || ^10.0.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "storybook": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0"
+    "storybook": "^8.0.0 || ^9.0.0 || ^10.0.0"
   },
   "peerDependenciesMeta": {
     "@storybook/addon-docs": {

@@ -2,7 +2,7 @@
 
 A Storybook addon for switching themes. One config in `main.js` — the toolbar button, manager UI, preview iframe and docs pages all switch together.
 
-![Storybook 7–10](https://img.shields.io/badge/Storybook-7.x%20--%2010.x-ff4785?logo=storybook)
+![Storybook 8–10](https://img.shields.io/badge/Storybook-8.x%20--%2010.x-ff4785?logo=storybook)
 ![npm version](https://img.shields.io/npm/v/sb-theme-switcher.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -143,8 +143,23 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
 
 ## Compatibility
 
-- **Storybook** 7.x – 10.x (docs container requires `@storybook/addon-docs`)
+| Storybook | Status | Notes |
+| --------- | ------ | ----- |
+| 10.x | ✅ tested | |
+| 9.x | ✅ tested | |
+| 8.x | ✅ tested | the addon automatically uses a dedicated manager bundle — SB 8 only aliases `storybook/internal/manager-api` |
+| 7.x | ❌ not supported | SB 7 lacks the `storybook/*` module aliases the addon relies on |
+
 - **React** 16.8+ – 19.x
+- Docs container requires `@storybook/addon-docs`
+
+## Examples
+
+Runnable examples for each supported major live in [`examples/`](./examples):
+
+- [`examples/storybook-10`](./examples/storybook-10) — 3 themes (dropdown UI)
+- [`examples/storybook-9`](./examples/storybook-9) — 2 themes (toggle UI)
+- [`examples/storybook-8`](./examples/storybook-8) — 2 themes (toggle UI)
 
 ## License
 

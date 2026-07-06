@@ -5,9 +5,11 @@ Storybook-аддон переключения тем (`sb-theme-switcher`). Пу
 ## Команды
 
 ```bash
-yarn build        # tsup: dist/ в CJS + ESM + d.ts
+yarn build        # tsup + scripts/patch-manager-sb8.mjs (правит импорты SB8-бандла)
 yarn typecheck    # tsc --noEmit
-yarn example      # собрать либу и поднять examples/basic
+yarn example      # собрать либу и поднять examples/storybook-10
+yarn example:sb9  # то же для examples/storybook-9
+yarn example:sb8  # то же для examples/storybook-8
 npm pack          # тарбол для локальной проверки в ds-2.0
 yarn packing      # npm publish (только по просьбе владельца)
 ```
@@ -26,6 +28,7 @@ yarn packing      # npm publish (только по просьбе владель
 
 Ключевые правила:
 
+- **Совместимость по версиям Storybook**: 8/9/10 поддерживаются, 7 — нет. Билдер менеджера алиасит имена модулей на глобалы: SB 9/10 — `storybook/manager-api`, SB 8 — только `storybook/internal/manager-api`. Поэтому собираются два бандла (`manager` и `manager-sb8`, см. `scripts/patch-manager-sb8.mjs`), а preset в `managerEntries` выбирает нужный по `require('storybook/package.json').version`. Экспорта `./manager` в package.json нет намеренно — иначе SB 9/10 зарегистрируют энтри второй раз.
 - **Доставка опций** — только через preset-хуки `managerHead`/`previewHead`: они сериализуют опции в `<script>window.__SB_THEME_SWITCHER_OPTIONS__ = ...</script>` для обоих контекстов. Писать в `global` из preset бесполезно — Node-глобалы не попадают в браузер (баг 0.1.x).
 - **Опции обязаны быть JSON-сериализуемыми** — React-компоненты в `icon` отбрасываются при сериализации (в `main.js` допустимы только SVG-строки; компоненты — только через ручной script в manager-head.html).
 - **Никаких runtime `require()` в браузерном коде** — в ESM-сборке под Vite это ReferenceError. Только статические импорты; новые внешние пакеты добавлять в `external` в `tsup.config.ts` (иначе вбандлится копия storybook-рантайма и аддон сломается).

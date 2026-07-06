@@ -2,7 +2,7 @@
 
 Аддон Storybook для переключения тем. Один конфиг в `main.js` — кнопка в тулбаре, UI менеджера, preview-iframe и docs-страницы переключаются вместе.
 
-![Storybook 7–10](https://img.shields.io/badge/Storybook-7.x%20--%2010.x-ff4785?logo=storybook)
+![Storybook 8–10](https://img.shields.io/badge/Storybook-8.x%20--%2010.x-ff4785?logo=storybook)
 ![npm version](https://img.shields.io/npm/v/sb-theme-switcher.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -143,8 +143,23 @@ function MyComponent() {
 
 ## Совместимость
 
-- **Storybook** 7.x – 10.x (docs-контейнеру нужен `@storybook/addon-docs`)
+| Storybook | Статус | Примечание |
+| --------- | ------ | ---------- |
+| 10.x | ✅ протестирован | |
+| 9.x | ✅ протестирован | |
+| 8.x | ✅ протестирован | аддон автоматически использует отдельный manager-бандл — SB 8 алиасит только `storybook/internal/manager-api` |
+| 7.x | ❌ не поддерживается | в SB 7 нет алиасов модулей `storybook/*`, на которые опирается аддон |
+
 - **React** 16.8+ – 19.x
+- Docs-контейнеру нужен `@storybook/addon-docs`
+
+## Примеры
+
+Рабочие примеры для каждого поддерживаемого мажора — в [`examples/`](./examples):
+
+- [`examples/storybook-10`](./examples/storybook-10) — 3 темы (дропдаун)
+- [`examples/storybook-9`](./examples/storybook-9) — 2 темы (тоггл)
+- [`examples/storybook-8`](./examples/storybook-8) — 2 темы (тоггл)
 
 ## Лицензия
 

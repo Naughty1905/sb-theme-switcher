@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2026-07-06
 
+### Added
+- Storybook 8 support: the preset detects the Storybook major version and registers a dedicated `manager-sb8` bundle (SB 8 only aliases `storybook/internal/manager-api` in its manager builder; the flat `storybook/manager-api` alias appeared in SB 9).
+- Runnable examples per supported major: `examples/storybook-8` (toggle), `examples/storybook-9` (toggle), `examples/storybook-10` (3 themes, dropdown) — each verified in the browser (toolbar, manager/preview/docs sync, persistence).
+- Storybook 7 is explicitly not supported: the preset logs a warning and skips manager registration.
+
 ### Fixed
 - Addon options from `main.js` never reached the browser: the preset stored them in the Node process `global`, while manager/preview read `window`. Options are now injected into the HTML head of both the manager window and the preview iframe via the `managerHead`/`previewHead` preset hooks — no more manual `manager-head.html` scripts.
 - Preview iframe ignored a custom `storageKey` on load and fell back to the system color scheme (theme flash / wrong theme on reload and on direct `iframe.html` opens). The preview now resolves the saved theme from the injected options.
