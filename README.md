@@ -145,9 +145,9 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
 
 | Storybook | Status | Notes |
 | --------- | ------ | ----- |
-| 10.x | ✅ tested | |
-| 9.x | ✅ tested | |
-| 8.x | ✅ tested | the addon automatically uses a dedicated manager bundle — SB 8 only aliases `storybook/internal/manager-api` |
+| 10.x | ✅ tested on 10.1 | |
+| 9.x | ✅ tested on 9.1 | |
+| 8.x | ✅ tested on 8.6 | the addon automatically uses a dedicated manager bundle — SB 8 only aliases `storybook/internal/manager-api` |
 | 7.x | ❌ not supported | SB 7 lacks the `storybook/*` module aliases the addon relies on |
 
 - **React** 16.8+ – 19.x
