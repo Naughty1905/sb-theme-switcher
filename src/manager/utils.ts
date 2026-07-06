@@ -62,7 +62,7 @@ export const observePreviewIframe = (storageKey: string, themes: Theme[]): void 
       if (previewDoc?.documentElement) {
         const currentTheme = previewDoc.documentElement.getAttribute('data-theme');
         if (currentTheme !== theme.class) {
-          applyPreviewTheme(theme.class);
+          applyPreviewTheme(theme.class, storageKey);
         }
       }
     };

@@ -1,37 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { addons, types } from 'storybook/manager-api';
-import { ADDON_ID, TOOL_ID, PARAM_KEY, DEFAULT_STORAGE_KEY } from '../constants';
-import type { ThemeSwitcherOptions, Theme } from '../types';
+import { ADDON_ID, TOOL_ID, DEFAULT_STORAGE_KEY } from '../constants';
+import { getWindowOptions } from '../options';
+import type { Theme } from '../types';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { getInitialTheme, applyManagerTheme, applyPreviewTheme, observePreviewIframe } from './utils';
 
-const getAddonOptions = (): ThemeSwitcherOptions | null => {
-  try {
-    if (typeof window !== 'undefined' && (window as any).__SB_THEME_SWITCHER_OPTIONS__) {
-      return (window as any).__SB_THEME_SWITCHER_OPTIONS__;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-};
-
 const ThemeSwitcherTool = () => {
-  const options = getAddonOptions();
-  
-  if (!options || !options.themes || options.themes.length < 2) {
-    return null;
-  }
+  const options = getWindowOptions();
+  const themes = options?.themes || [];
+  const storageKey = options?.storageKey || DEFAULT_STORAGE_KEY;
 
-  const storageKey = options.storageKey || DEFAULT_STORAGE_KEY;
-  const [currentTheme, setCurrentTheme] = useState<Theme>(() => 
-    getInitialTheme(options.themes, storageKey, options.defaultTheme)
+  const [currentTheme, setCurrentTheme] = useState<Theme | null>(() =>
+    themes.length >= 2 ? getInitialTheme(themes, storageKey, options?.defaultTheme) : null
   );
 
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === storageKey && e.newValue) {
-        const theme = options.themes.find(t => t.id === e.newValue);
+        const theme = themes.find(t => t.id === e.newValue);
         if (theme) {
           setCurrentTheme(theme);
           applyManagerTheme(theme);
@@ -42,11 +29,15 @@ const ThemeSwitcherTool = () => {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [options.themes, storageKey]);
+  }, [themes, storageKey]);
+
+  if (themes.length < 2 || !currentTheme) {
+    return null;
+  }
 
   return (
     <ThemeSwitcher
-      themes={options.themes}
+      themes={themes}
       currentTheme={currentTheme}
       storageKey={storageKey}
       onThemeChange={setCurrentTheme}
@@ -54,11 +45,11 @@ const ThemeSwitcherTool = () => {
   );
 };
 
-const options = getAddonOptions();
+const options = getWindowOptions();
 if (options && options.themes && options.themes.length >= 2) {
   const storageKey = options.storageKey || DEFAULT_STORAGE_KEY;
   const initialTheme = getInitialTheme(options.themes, storageKey, options.defaultTheme);
-  
+
   applyManagerTheme(initialTheme);
   setTimeout(() => applyPreviewTheme(initialTheme.class, storageKey), 1000);
   observePreviewIframe(storageKey, options.themes);

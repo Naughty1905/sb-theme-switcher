@@ -1,407 +1,37 @@
 # sb-theme-switcher
 
-Аддон для Storybook, позволяющий пользователям переключаться между несколькими темами с интеллектуальной адаптацией UI.
+Аддон Storybook для переключения тем. Один конфиг в `main.js` — кнопка в тулбаре, UI менеджера, preview-iframe и docs-страницы переключаются вместе.
 
-![Storybook 7](https://img.shields.io/badge/Storybook-7.x-ff4785?logo=storybook)
-![Storybook 8](https://img.shields.io/badge/Storybook-8.x-ff4785?logo=storybook)
-![Storybook 9](https://img.shields.io/badge/Storybook-9.x-ff4785?logo=storybook)
-![Storybook 10](https://img.shields.io/badge/Storybook-10.x-ff4785?logo=storybook)
+![Storybook 7–10](https://img.shields.io/badge/Storybook-7.x%20--%2010.x-ff4785?logo=storybook)
 ![npm version](https://img.shields.io/npm/v/sb-theme-switcher.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 [English](./README.md) | **Русский**
 
-## Почему sb-theme-switcher?
-
-В отличие от [storybook-dark-mode](https://github.com/hipstersmoothie/storybook-dark-mode), который поддерживает только светлую/темную тему, **sb-theme-switcher** предоставляет:
-
-### 🎯 **Полный контроль над темами**
-
-- **Автоматическая адаптация UI**: кнопка-переключатель для 2 тем, выпадающий список для 3+ тем
-- **Неограниченное количество тем**: не только светлая/темная — добавляйте сколько угодно тем
-- **Полная синхронизация**: изменения темы применяются **одновременно** к интерфейсу Storybook **и** к iframe с превью
-
-### ⚡ **Нулевая сложность настройки**
-
-- **Не требуются декораторы**: работает из коробки без оборачивания stories
-- **Автоматическая синхронизация превью**: тема мгновенно применяется к вашим компонентам
-- **Автоматическая синхронизация manager**: тема интерфейса Storybook меняется автоматически
-
-### 🎨 **Максимальная гибкость**
-
-- **Кастомные иконки**: используйте свои иконки для каждой темы
-- **Цветовые индикаторы**: визуальная идентификация тем в выпадающем списке
-- **TypeScript First**: полная типизация и поддержка IntelliSense
-
 ## Возможности
 
-✨ **Умный UI**: автоматически выбирает переключатель (2 темы) или выпадающий список (3+ темы)  
-🔄 **Полная синхронизация**: изменяет тему **и** в Storybook manager, **и** в iframe превью  
-🎨 **Неограниченное количество тем**: поддержка 2, 3, 4 и более тем  
-💾 **Сохранение**: сохраняет выбранную тему в localStorage  
-📱 **Синхронизация между вкладками**: тема синхронизируется между вкладками браузера  
-📚 **Режим Docs**: отлично работает в Canvas и Docs  
-🔧 **TypeScript**: полные определения типов включены
+- **Один конфиг, всё синхронно** — UI менеджера, preview-iframe и docs переключаются вместе; декораторы не нужны
+- **Умный UI в тулбаре** — тоггл для 2 тем, дропдаун с цветовыми индикаторами для 3+
+- **Персистентность** — выбор сохраняется в localStorage и восстанавливается при загрузке (включая прямое открытие `iframe.html`), синхронизируется между вкладками
+- **Поддержка Docs** — готовый `DocsContainer`, реактивно перекрашивающий страницы документации
+- **TypeScript** — полные типы в комплекте
 
 ## Установка
 
 ```bash
-npm install sb-theme-switcher
+npm install --save-dev sb-theme-switcher
 # или
-yarn add sb-theme-switcher
+yarn add --dev sb-theme-switcher
 ```
 
 ## Быстрый старт
 
-### 1. Настройте темы
+### 1. Зарегистрируйте аддон с темами
 
-Создайте темы Storybook (`.storybook/themes.ts`):
-
-```typescript
-import { create } from 'storybook/theming';
-
-export const lightTheme = create({
-  base: 'light',
-  brandTitle: 'Мое приложение',
-  colorPrimary: '#167FFB'
-  // ... другие опции темы
-});
-
-export const darkTheme = create({
-  base: 'dark',
-  brandTitle: 'Мое приложение',
-  colorPrimary: '#2A8CFF'
-  // ... другие опции темы
-});
-```
-
-### 2. Зарегистрируйте аддон
-
-В `.storybook/main.ts`:
+`.storybook/main.ts`:
 
 ```typescript
-import type { StorybookConfig } from 'storybook/internal/types';
-import { lightTheme, darkTheme } from './themes';
-
-const config: StorybookConfig = {
-  addons: [
-    // ... другие аддоны
-    {
-      name: 'sb-theme-switcher',
-      options: {
-        themes: [
-          {
-            id: 'light',
-            title: 'Светлая',
-            class: 'light-theme',
-            color: '#ffffff',
-            storybookTheme: lightTheme
-          },
-          {
-            id: 'dark',
-            title: 'Темная',
-            class: 'dark-theme',
-            color: '#1a1a1a',
-            storybookTheme: darkTheme
-          },
-          {
-            id: 'blue',
-            title: 'Синяя',
-            class: 'blue-theme',
-            color: '#167FFB',
-            storybookTheme: blueTheme
-          }
-        ],
-        defaultTheme: 'light',
-        storageKey: 'my-app-theme'
-      }
-    }
-  ]
-};
-
-export default config;
-```
-
-### 3. Включите поддержку Docs (опционально)
-
-В `.storybook/preview.tsx`:
-
-```typescript
-import { DocsContainer } from 'sb-theme-switcher';
-import { lightTheme, darkTheme } from './themes';
-
-const themes = [
-  {
-    id: 'light',
-    title: 'Светлая',
-    class: 'light-theme',
-    storybookTheme: lightTheme
-  },
-  {
-    id: 'dark',
-    title: 'Темная',
-    class: 'dark-theme',
-    storybookTheme: darkTheme
-  }
-];
-
-export const parameters = {
-  docs: {
-    container: props => <DocsContainer {...props} themes={themes} />
-  }
-};
-```
-
-### 4. Добавьте CSS для тем
-
-В вашем глобальном CSS (например, `preview-head.html` или основной CSS файл):
-
-```css
-[data-theme='light-theme'] {
-  --background: #ffffff;
-  --text-color: #000000;
-  /* ... ваши переменные светлой темы */
-}
-
-[data-theme='dark-theme'] {
-  --background: #1a1a1a;
-  --text-color: #ffffff;
-  /* ... ваши переменные темной темы */
-}
-```
-
-## Параметры конфигурации
-
-### Объект Theme
-
-```typescript
-interface Theme {
-  id: string; // Уникальный идентификатор
-  title: string; // Отображаемое имя в выпадающем списке
-  class: string; // CSS класс, применяемый к document.documentElement
-  color?: string; // Цветовой индикатор в выпадающем списке
-  storybookTheme: object; // Объект темы Storybook
-  icon?: string | React.ComponentType; // Кастомная иконка (SVG строка или компонент)
-}
-```
-
-### Опции аддона
-
-```typescript
-interface ThemeSwitcherOptions {
-  themes: Theme[]; // Массив тем (минимум 2)
-  defaultTheme?: string; // ID темы по умолчанию
-  storageKey?: string; // Ключ localStorage (по умолчанию: 'sb-theme-switcher')
-  icons?: Record<string, string | React.ComponentType>; // Кастомные иконки для тем
-}
-```
-
-## Примеры
-
-### Пример 1: Две темы (переключатель)
-
-```typescript
-{
-  name: 'sb-theme-switcher',
-  options: {
-    themes: [
-      {
-        id: 'light',
-        title: 'Светлая',
-        class: 'light-theme',
-        storybookTheme: lightTheme
-      },
-      {
-        id: 'dark',
-        title: 'Темная',
-        class: 'dark-theme',
-        storybookTheme: darkTheme
-      }
-    ]
-  }
-}
-```
-
-Результат: кнопка-переключатель с иконками солнца/луны
-
-### Пример 2: Множество тем (выпадающий список)
-
-```typescript
-{
-  name: 'sb-theme-switcher',
-  options: {
-    themes: [
-      {
-        id: 'light',
-        title: 'Светлая',
-        class: 'light-theme',
-        color: '#ffffff',
-        storybookTheme: lightTheme
-      },
-      {
-        id: 'dark',
-        title: 'Темная',
-        class: 'dark-theme',
-        color: '#1a1a1a',
-        storybookTheme: darkTheme
-      },
-      {
-        id: 'blue',
-        title: 'Синяя',
-        class: 'blue-theme',
-        color: '#167FFB',
-        storybookTheme: blueTheme
-      }
-    ],
-    defaultTheme: 'light'
-  }
-}
-```
-
-Результат: выпадающий список с цветовыми индикаторами
-
-### Пример 3: Кастомные иконки
-
-```typescript
-{
-  name: 'sb-theme-switcher',
-  options: {
-    themes: [
-      {
-        id: 'light',
-        title: 'Светлая',
-        class: 'light-theme',
-        storybookTheme: lightTheme,
-        icon: '<svg>...</svg>' // Кастомная SVG строка
-      },
-      {
-        id: 'dark',
-        title: 'Темная',
-        class: 'dark-theme',
-        storybookTheme: darkTheme,
-        icon: MyCustomIcon // React компонент
-      }
-    ]
-  }
-}
-```
-
-## Как это работает
-
-### Автоматическая синхронизация тем
-
-Когда вы переключаете темы, **sb-theme-switcher** автоматически обновляет:
-
-1. **Интерфейс Storybook Manager** - весь интерфейс Storybook (боковая панель, тулбар, панели) меняет тему
-2. **Iframe превью** - ваши компоненты в превью получают обновленный атрибут `data-theme`
-3. **Страницы Docs** - страницы документации автоматически переключаются на выбранную тему
-
-Это **главное преимущество** перед другими решениями, которые изменяют только превью или требуют ручной настройки декораторов.
-
-### Технические детали
-
-1. **Manager UI**: добавляет кнопку в тулбар (переключатель для 2 тем) или выпадающий список (для 3+ тем)
-2. **Применение темы**:
-   - Применяет объект темы Storybook к manager UI через `addons.setConfig()`
-   - Устанавливает атрибут `data-theme` на `document.documentElement` iframe превью
-   - Отправляет postMessage в превью для мгновенной синхронизации
-3. **Сохранение**: сохраняет выбранную тему в localStorage с настраиваемым ключом
-4. **Синхронизация между вкладками**: слушает события storage для синхронизации между вкладками
-5. **Поддержка Docs**: кастомный `DocsContainer` с `MutationObserver` для реактивного обновления темы
-
-## Сравнение с storybook-dark-mode
-
-| Функция                  | sb-theme-switcher            | storybook-dark-mode        |
-| ------------------------ | ---------------------------- | -------------------------- |
-| Количество тем           | Неограниченно (2+)           | Только 2 (светлая/темная)  |
-| Синхронизация Manager UI | ✅ Автоматическая            | ❌ Ручная настройка        |
-| Синхронизация Preview    | ✅ Автоматическая            | ✅ Через декоратор         |
-| Синхронизация Docs       | ✅ Автоматическая            | ⚠️ Требует настройки       |
-| Адаптация UI             | Умная (переключатель/список) | Только переключатель       |
-| Кастомные иконки         | ✅ Для каждой темы           | ✅ Глобально               |
-| Цветовые индикаторы      | ✅ Да                        | ❌ Нет                     |
-| Сложность настройки      | Низкая (один конфиг)         | Средняя (нужны декораторы) |
-| Поддержка Storybook 7-10 | ✅ Да                        | ⚠️ Ограниченная            |
-
-## Совместимость
-
-- **Storybook**: 7.x, 8.x, 9.x, 10.x
-- **React**: 16.8+, 17.x, 18.x, 19.x
-- **TypeScript**: 5.x
-
-## Решение проблем
-
-### Тема не применяется к превью
-
-Убедитесь, что у вас есть CSS правила для классов тем:
-
-```css
-[data-theme='your-theme-class'] {
-  /* ваши переменные темы */
-}
-```
-
-### Тема не сохраняется
-
-Проверьте, что `storageKey` уникален и не конфликтует с другими ключами localStorage.
-
-### Docs не обновляются
-
-Убедитесь, что вы настроили `DocsContainer` в `.storybook/preview.tsx` и передали проп `themes`.
-
-## API Reference
-
-### Экспорты
-
-```typescript
-// Основные экспорты
-export { DocsContainer } from 'sb-theme-switcher';
-export { useTheme } from 'sb-theme-switcher';
-export { withTheme } from 'sb-theme-switcher';
-
-// Типы
-export type { Theme, ThemeSwitcherOptions, StorybookTheme, ThemeState } from 'sb-theme-switcher';
-```
-
-### Хук `useTheme()`
-
-React хук для чтения текущей темы в ваших компонентах:
-
-```typescript
-import { useTheme } from 'sb-theme-switcher';
-
-function MyComponent() {
-  const theme = useTheme(); // Возвращает текущий класс темы, например, 'dark-theme'
-  return <div>Текущая тема: {theme}</div>;
-}
-```
-
-## Миграция с storybook-dark-mode
-
-Переход с [storybook-dark-mode](https://github.com/hipstersmoothie/storybook-dark-mode) очень простой:
-
-### Было (storybook-dark-mode)
-
-```typescript
-// .storybook/preview.tsx
-import { themes } from '@storybook/theming';
-
-export const parameters = {
-  darkMode: {
-    dark: { ...themes.dark },
-    light: { ...themes.light }
-  }
-};
-
-// Нужны декораторы для превью
-export const decorators = [withTheme];
-```
-
-### Стало (sb-theme-switcher)
-
-```typescript
-// .storybook/main.ts
-import { lightTheme, darkTheme } from './themes';
+import { lightTheme, darkTheme } from './themes'; // созданы через create() из 'storybook/theming'
 
 export default {
   addons: [
@@ -411,31 +41,111 @@ export default {
         themes: [
           { id: 'light', title: 'Светлая', class: 'light-theme', storybookTheme: lightTheme },
           { id: 'dark', title: 'Темная', class: 'dark-theme', storybookTheme: darkTheme }
-        ]
+        ],
+        defaultTheme: 'light',
+        storageKey: 'my-app-theme'
       }
     }
   ]
 };
-
-// Декораторы не нужны! Всё работает автоматически
 ```
 
-**Преимущества:**
+Это всё, что нужно аддону: опции автоматически доставляются и в окно менеджера, и в preview-iframe.
 
-- ✅ Не требуются декораторы
-- ✅ Тема Manager UI меняется автоматически
-- ✅ Тема Preview меняется автоматически
-- ✅ Тема Docs меняется автоматически
-- ✅ Можно добавить больше 2 тем в любой момент
+### 2. Стилизуйте компоненты под темы
+
+`class` активной темы устанавливается как атрибут `data-theme` на `<html>` preview-iframe:
+
+```css
+[data-theme='light-theme'] {
+  --background: #ffffff;
+  --text-color: #000000;
+}
+
+[data-theme='dark-theme'] {
+  --background: #1a1a1a;
+  --text-color: #ffffff;
+}
+```
+
+### 3. Docs-страницы (опционально)
+
+`.storybook/preview.tsx`:
+
+```typescript
+import { DocsContainer } from 'sb-theme-switcher';
+
+export const parameters = {
+  docs: {
+    container: DocsContainer // темы подхватываются из опций аддона
+  }
+};
+```
+
+Требуется `@storybook/addon-docs` (он уже есть, если вы используете docs).
+
+## Опции
+
+```typescript
+interface ThemeSwitcherOptions {
+  themes: Theme[];        // минимум 2
+  defaultTheme?: string;  // id темы до первого выбора пользователя
+  storageKey?: string;    // ключ localStorage (по умолчанию: 'sb-theme-switcher')
+}
+
+interface Theme {
+  id: string;             // уникальный id, сохраняется в localStorage
+  title: string;          // подпись в дропдауне
+  class: string;          // значение атрибута data-theme
+  storybookTheme: object; // объект темы из create() ('storybook/theming')
+  color?: string;         // цветовой индикатор в дропдауне (3+ тем)
+  icon?: string;          // кастомная SVG-строка для кнопки в тулбаре
+}
+```
+
+Для 2 тем — кнопка-тоггл (по умолчанию солнце/луна), для 3+ — дропдаун.
+
+## Хук `useTheme()`
+
+Читает класс текущей темы внутри preview (реактивно, через `MutationObserver`):
+
+```typescript
+import { useTheme } from 'sb-theme-switcher';
+
+function MyComponent() {
+  const theme = useTheme(); // например, 'dark-theme'
+  return <div>Текущая тема: {theme}</div>;
+}
+```
+
+## Как это работает
+
+- Preset вставляет сериализованные опции в HTML-head **обоих** контекстов — окна менеджера и preview-iframe (`window.__SB_THEME_SWITCHER_OPTIONS__`), поэтому ручные скрипты не нужны.
+- Переключение темы: применяет `storybookTheme` к UI менеджера, ставит `data-theme` на оба документа и сохраняет в localStorage `<storageKey>` (id темы) + `<storageKey>-class` (css-класс).
+- При загрузке — включая автономный `iframe.html` — восстанавливается сохранённая тема; если её нет, используется `defaultTheme`, затем системная `prefers-color-scheme`.
+- Синхронизация между вкладками — через события `storage`, менеджер → preview в той же вкладке — через `postMessage`.
+
+### Иконки-компоненты React
+
+Опции из `main.js` сериализуются в JSON, поэтому `icon` там — только SVG-строка. Если нужна иконка-компонент React, задайте опции вручную в `.storybook/manager-head.html`:
+
+```html
+<script>
+  window.__SB_THEME_SWITCHER_OPTIONS__ = { themes: [/* ... */] };
+</script>
+```
+
+## Решение проблем
+
+- **Компоненты не меняются** — проверьте, что есть CSS-правила для `[data-theme='<class>']` и значения `class` в опциях им соответствуют.
+- **Нет кнопки в тулбаре** — аддону нужно минимум 2 темы в опциях.
+- **Docs-страницы не меняются** — задайте `docs.container: DocsContainer` в `preview.tsx` и убедитесь, что установлен `@storybook/addon-docs`.
+
+## Совместимость
+
+- **Storybook** 7.x – 10.x (docs-контейнеру нужен `@storybook/addon-docs`)
+- **React** 16.8+ – 19.x
 
 ## Лицензия
 
 MIT
-
-## Участие в разработке
-
-Приветствуются любые вклады! Пожалуйста, откройте issue или PR на [GitHub](https://github.com/Naughty1905/sb-theme-switcher).
-
-## Благодарности
-
-Вдохновлено [storybook-dark-mode](https://github.com/hipstersmoothie/storybook-dark-mode) и потребностями современных дизайн-систем в переключении тем.

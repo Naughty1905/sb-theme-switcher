@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-07-06
+
+### Fixed
+- Addon options from `main.js` never reached the browser: the preset stored them in the Node process `global`, while manager/preview read `window`. Options are now injected into the HTML head of both the manager window and the preview iframe via the `managerHead`/`previewHead` preset hooks — no more manual `manager-head.html` scripts.
+- Preview iframe ignored a custom `storageKey` on load and fell back to the system color scheme (theme flash / wrong theme on reload and on direct `iframe.html` opens). The preview now resolves the saved theme from the injected options.
+- `DocsContainer` used runtime `require()`, which silently fails in ESM/Vite builds and rendered docs in a bare `<div>`. Replaced with a static import from `@storybook/addon-docs/blocks` (optional peer dependency).
+- `observePreviewIframe` wrote the theme class under the default storage key instead of the configured one.
+- React hooks were called after a conditional early return in the toolbar tool component.
+
+### Changed
+- `DocsContainer` picks up themes from the addon options automatically; the `themes` prop is now an optional override.
+- The preset no longer registers `managerEntries`/`config` — Storybook auto-detects the `./manager` and `./preview` package exports (fixes double loading of the manager entry).
+- Non-serializable theme icons (React components) are stripped from `main.js` options; use an SVG string, or define `window.__SB_THEME_SWITCHER_OPTIONS__` manually for component icons.
+
 ## [0.1.0] - 2026-01-23
 
 ### Added

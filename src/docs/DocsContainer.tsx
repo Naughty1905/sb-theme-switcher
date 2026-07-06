@@ -1,8 +1,11 @@
 import React, { FC, PropsWithChildren, useMemo } from 'react';
+import { DocsContainer as BaseDocsContainer } from '@storybook/addon-docs/blocks';
 import { useTheme } from './useTheme';
+import { getWindowOptions } from '../options';
 import type { Theme, StorybookTheme } from '../types';
 
 interface DocsContainerProps extends PropsWithChildren {
+  /** Overrides themes from addon options (window.__SB_THEME_SWITCHER_OPTIONS__) */
   themes?: Theme[];
   context?: any;
   [key: string]: any;
@@ -10,39 +13,22 @@ interface DocsContainerProps extends PropsWithChildren {
 
 export const DocsContainer: FC<DocsContainerProps> = ({ children, themes, ...props }) => {
   const currentThemeClass = useTheme();
-  
+
+  const resolvedThemes = themes ?? getWindowOptions()?.themes;
+
   const theme: StorybookTheme = useMemo(() => {
-    if (!themes || themes.length === 0) {
+    if (!resolvedThemes || resolvedThemes.length === 0) {
       const isDark = currentThemeClass.includes('dark');
       return { base: isDark ? 'dark' : 'light' } as StorybookTheme;
     }
-    
-    const matchedTheme = themes.find(t => t.class === currentThemeClass);
-    return matchedTheme?.storybookTheme || themes[0].storybookTheme;
-  }, [currentThemeClass, themes]);
 
-  const DocsContainerComponent = useMemo(() => {
-    try {
-      const { DocsContainer } = require('@storybook/addon-docs');
-      return DocsContainer;
-    } catch {
-      try {
-        const blocks = require('storybook/internal/blocks');
-        return blocks.DocsContainer;
-      } catch {
-        try {
-          const blocks = require('@storybook/blocks');
-          return blocks.DocsContainer;
-        } catch {
-          return ({ children: c }: any) => <div data-theme={currentThemeClass}>{c}</div>;
-        }
-      }
-    }
-  }, [currentThemeClass]);
+    const matchedTheme = resolvedThemes.find(t => t.class === currentThemeClass);
+    return matchedTheme?.storybookTheme || resolvedThemes[0].storybookTheme;
+  }, [currentThemeClass, resolvedThemes]);
 
   return (
-    <DocsContainerComponent {...props} theme={theme}>
+    <BaseDocsContainer {...(props as any)} theme={theme as any}>
       {children}
-    </DocsContainerComponent>
+    </BaseDocsContainer>
   );
 };

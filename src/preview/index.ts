@@ -1,17 +1,36 @@
-import { DEFAULT_STORAGE_KEY } from '../constants';
+import { getStorageKey, getWindowOptions } from '../options';
 
 /**
- * Get storage key from window or use default
+ * Resolve the theme class to apply on initial load, in priority order:
+ * saved class -> saved id -> defaultTheme option -> system preference.
  */
-const getStorageKey = (): string => {
-  try {
-    if (typeof window !== 'undefined' && (window as any).__SB_THEME_SWITCHER_OPTIONS__) {
-      return (window as any).__SB_THEME_SWITCHER_OPTIONS__.storageKey || DEFAULT_STORAGE_KEY;
-    }
-  } catch {
-    // Fallback to default
+const resolveInitialThemeClass = (): string => {
+  const storageKey = getStorageKey();
+  const options = getWindowOptions();
+  const themes = options?.themes || [];
+
+  const savedThemeClass = localStorage.getItem(`${storageKey}-class`);
+  if (savedThemeClass) {
+    return savedThemeClass;
   }
-  return DEFAULT_STORAGE_KEY;
+
+  const savedThemeId = localStorage.getItem(storageKey);
+  if (savedThemeId) {
+    const savedTheme = themes.find(t => t.id === savedThemeId);
+    // Convention fallback: id + '-theme'
+    return savedTheme?.class || `${savedThemeId}-theme`;
+  }
+
+  if (options?.defaultTheme) {
+    const defaultTheme = themes.find(t => t.id === options.defaultTheme);
+    if (defaultTheme) {
+      return defaultTheme.class;
+    }
+  }
+
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const preferredTheme = themes.find(t => t.storybookTheme?.base === (prefersDark ? 'dark' : 'light'));
+  return preferredTheme?.class || (prefersDark ? 'dark-theme' : 'light-theme');
 };
 
 /**
@@ -19,24 +38,7 @@ const getStorageKey = (): string => {
  * This runs when the preview loads
  */
 const initializePreviewTheme = () => {
-  const storageKey = getStorageKey();
-  
-  // Try to get theme ID from localStorage (manager saves it)
-  const savedThemeId = localStorage.getItem(storageKey);
-  
-  // Try to get theme class from localStorage (manager also saves it)
-  const savedThemeClass = localStorage.getItem(`${storageKey}-class`);
-  
-  if (savedThemeClass) {
-    document.documentElement.setAttribute('data-theme', savedThemeClass);
-  } else if (savedThemeId) {
-    // Fallback: try to construct class from ID (convention: id + '-theme')
-    document.documentElement.setAttribute('data-theme', `${savedThemeId}-theme`);
-  } else {
-    // Fallback to system preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark-theme' : 'light-theme');
-  }
+  document.documentElement.setAttribute('data-theme', resolveInitialThemeClass());
 };
 
 /**
@@ -44,7 +46,7 @@ const initializePreviewTheme = () => {
  */
 const observeThemeChanges = () => {
   const storageKey = getStorageKey();
-  
+
   // Listen for storage events (cross-tab sync)
   window.addEventListener('storage', (e: StorageEvent) => {
     if (e.key === `${storageKey}-class` && e.newValue) {

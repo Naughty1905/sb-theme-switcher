@@ -1,6 +1,6 @@
 {
   "name": "sb-theme-switcher",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A Storybook addon for switching between multiple themes with support for toggle (2 themes) and dropdown (3+ themes)",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -61,11 +61,18 @@
   },
   "homepage": "https://github.com/Naughty1905/sb-theme-switcher#readme",
   "peerDependencies": {
+    "@storybook/addon-docs": "^9.0.0 || ^10.0.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "storybook": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0"
   },
+  "peerDependenciesMeta": {
+    "@storybook/addon-docs": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@storybook/addon-docs": "^10.1.11",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",

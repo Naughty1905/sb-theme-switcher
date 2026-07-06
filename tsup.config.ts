@@ -12,14 +12,18 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
     clean: true,
-    external: ['react', 'react-dom', 'storybook', '@storybook/manager-api', '@storybook/preview-api', '@storybook/theming'],
+    external: [
+      'react',
+      'react-dom',
+      'storybook',
+      '@storybook/manager-api',
+      '@storybook/preview-api',
+      '@storybook/theming',
+      '@storybook/addon-docs'
+    ],
     esbuildOptions(options) {
       options.banner = {
         js: '"use client";'
-      };
-      // Suppress require.resolve warnings for preset
-      options.logOverride = {
-        'require-resolve-not-external': 'silent'
       };
     }
   }
