@@ -8,6 +8,8 @@ A Storybook addon for switching themes. One config in `main.js` — the toolbar 
 
 **English** | [🇷🇺 Русский](./README.ru.md)
 
+**[▶ Live demo](https://naughty1905.github.io/sb-theme-switcher/)**
+
 ![Theme switching demo: manager UI and preview switch together](docs/demo-story.gif)
 
 ## Features

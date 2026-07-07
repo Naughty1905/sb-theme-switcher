@@ -8,6 +8,8 @@
 
 [English](./README.md) | **Русский**
 
+**[▶ Живое демо](https://naughty1905.github.io/sb-theme-switcher/)**
+
 ![Демо переключения тем: UI менеджера и превью меняются вместе](docs/demo-story.gif)
 
 ## Возможности
