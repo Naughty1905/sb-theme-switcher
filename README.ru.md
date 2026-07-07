@@ -26,12 +26,35 @@ yarn add --dev sb-theme-switcher
 
 ## Быстрый старт
 
-### 1. Зарегистрируйте аддон с темами
+### 1. Создайте темы Storybook
+
+`.storybook/themes.ts` — обычные [объекты тем Storybook](https://storybook.js.org/docs/configure/user-interface/theming), они определяют цвета самого UI Storybook:
+
+```typescript
+import { create } from 'storybook/theming'; // Storybook 8: '@storybook/theming'
+
+export const lightTheme = create({
+  base: 'light',
+  brandTitle: 'My App',
+  appBg: '#FFFFFF',
+  barBg: '#EDEEEF'
+  // ...любые другие опции темы
+});
+
+export const darkTheme = create({
+  base: 'dark',
+  brandTitle: 'My App',
+  appBg: '#455161',
+  barBg: '#455161'
+});
+```
+
+### 2. Зарегистрируйте аддон с темами
 
 `.storybook/main.ts`:
 
 ```typescript
-import { lightTheme, darkTheme } from './themes'; // созданы через create() из 'storybook/theming'
+import { lightTheme, darkTheme } from './themes';
 
 export default {
   addons: [
@@ -52,7 +75,7 @@ export default {
 
 Это всё, что нужно аддону: опции автоматически доставляются и в окно менеджера, и в preview-iframe.
 
-### 2. Стилизуйте компоненты под темы
+### 3. Стилизуйте компоненты под темы
 
 `class` активной темы устанавливается как атрибут `data-theme` на `<html>` preview-iframe:
 
@@ -68,18 +91,23 @@ export default {
 }
 ```
 
-### 3. Docs-страницы (опционально)
+### 4. Docs-страницы (опционально)
 
 `.storybook/preview.tsx`:
 
 ```typescript
+import type { Preview } from '@storybook/react';
 import { DocsContainer } from 'sb-theme-switcher';
 
-export const parameters = {
-  docs: {
-    container: DocsContainer // темы подхватываются из опций аддона
+const preview: Preview = {
+  parameters: {
+    docs: {
+      container: DocsContainer // темы подхватываются из опций аддона
+    }
   }
 };
+
+export default preview;
 ```
 
 Требуется `@storybook/addon-docs` (он уже есть, если вы используете docs).
@@ -134,6 +162,14 @@ function MyComponent() {
   window.__SB_THEME_SWITCHER_OPTIONS__ = { themes: [/* ... */] };
 </script>
 ```
+
+## Миграция с 0.1.x
+
+В 0.1.x опции аддона не доходили до браузера, и настройка требовала ручных обходов. После обновления:
+
+1. Удалите ручной `<script>` с `window.__SB_THEME_SWITCHER_OPTIONS__` из `.storybook/manager-head.html` — теперь аддон сам инжектит опции из `main.js`.
+2. Передавайте опции (`themes`, `defaultTheme`, `storageKey`) в `main.js` — теперь это единственный источник конфигурации.
+3. `docs.container` больше не требует prop `themes`: достаточно `container: DocsContainer`.
 
 ## Решение проблем
 

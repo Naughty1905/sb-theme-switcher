@@ -26,12 +26,35 @@ yarn add --dev sb-theme-switcher
 
 ## Quick start
 
-### 1. Register the addon with your themes
+### 1. Create Storybook themes
+
+`.storybook/themes.ts` — regular [Storybook theme objects](https://storybook.js.org/docs/configure/user-interface/theming), they define the colors of the Storybook UI itself:
+
+```typescript
+import { create } from 'storybook/theming'; // Storybook 8: '@storybook/theming'
+
+export const lightTheme = create({
+  base: 'light',
+  brandTitle: 'My App',
+  appBg: '#FFFFFF',
+  barBg: '#EDEEEF'
+  // ...any other theme options
+});
+
+export const darkTheme = create({
+  base: 'dark',
+  brandTitle: 'My App',
+  appBg: '#455161',
+  barBg: '#455161'
+});
+```
+
+### 2. Register the addon with your themes
 
 `.storybook/main.ts`:
 
 ```typescript
-import { lightTheme, darkTheme } from './themes'; // created with create() from 'storybook/theming'
+import { lightTheme, darkTheme } from './themes';
 
 export default {
   addons: [
@@ -52,7 +75,7 @@ export default {
 
 That's all the addon needs: the options are delivered to both the manager window and the preview iframe automatically.
 
-### 2. Style your components per theme
+### 3. Style your components per theme
 
 The active theme's `class` is set as a `data-theme` attribute on `<html>` of the preview iframe:
 
@@ -68,18 +91,23 @@ The active theme's `class` is set as a `data-theme` attribute on `<html>` of the
 }
 ```
 
-### 3. Docs pages (optional)
+### 4. Docs pages (optional)
 
 `.storybook/preview.tsx`:
 
 ```typescript
+import type { Preview } from '@storybook/react';
 import { DocsContainer } from 'sb-theme-switcher';
 
-export const parameters = {
-  docs: {
-    container: DocsContainer // themes are picked up from the addon options
+const preview: Preview = {
+  parameters: {
+    docs: {
+      container: DocsContainer // themes are picked up from the addon options
+    }
   }
 };
+
+export default preview;
 ```
 
 Requires `@storybook/addon-docs` (you already have it if you use docs).
@@ -134,6 +162,14 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
   window.__SB_THEME_SWITCHER_OPTIONS__ = { themes: [/* ... */] };
 </script>
 ```
+
+## Migrating from 0.1.x
+
+In 0.1.x the addon options never reached the browser, so the setup required manual workarounds. After upgrading:
+
+1. Delete the manual `window.__SB_THEME_SWITCHER_OPTIONS__` `<script>` from `.storybook/manager-head.html` — the addon now injects the options from `main.js` by itself.
+2. Pass the options (`themes`, `defaultTheme`, `storageKey`) in `main.js` — it is the single source of truth now.
+3. `docs.container` no longer needs the `themes` prop: `container: DocsContainer` is enough.
 
 ## Troubleshooting
 
