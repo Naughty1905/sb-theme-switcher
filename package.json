@@ -1,6 +1,6 @@
 {
   "name": "sb-theme-switcher",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Storybook addon for switching between multiple themes with support for toggle (2 themes) and dropdown (3+ themes)",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
