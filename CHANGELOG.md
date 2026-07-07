@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-07-07
+
+### Fixed
+- The manager sidebar was not re-themed on runtime theme switch in Storybook 10.4+: `addons.setConfig({ theme })` alone no longer updates the whole manager UI. The toolbar tool now also calls `api.setOptions({ theme })` (the public manager API), which re-themes the entire UI on 8.x–10.x.
+
+### Added
+- Demo GIFs in the README (story and docs pages, 3 themes).
+
 ## [0.2.0] - 2026-07-06
 
 ### Added

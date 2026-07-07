@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { addons, types } from 'storybook/manager-api';
+import React, { useState, useEffect, useCallback } from 'react';
+import { addons, types, useStorybookApi } from 'storybook/manager-api';
 import { ADDON_ID, TOOL_ID, DEFAULT_STORAGE_KEY } from '../constants';
 import { getWindowOptions } from '../options';
 import type { Theme } from '../types';
@@ -7,6 +7,7 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 import { getInitialTheme, applyManagerTheme, applyPreviewTheme, observePreviewIframe } from './utils';
 
 const ThemeSwitcherTool = () => {
+  const api = useStorybookApi();
   const options = getWindowOptions();
   const themes = options?.themes || [];
   const storageKey = options?.storageKey || DEFAULT_STORAGE_KEY;
@@ -15,21 +16,36 @@ const ThemeSwitcherTool = () => {
     themes.length >= 2 ? getInitialTheme(themes, storageKey, options?.defaultTheme) : null
   );
 
+  const applyTheme = useCallback(
+    (theme: Theme) => {
+      localStorage.setItem(storageKey, theme.id);
+      applyManagerTheme(theme);
+      try {
+        // addons.setConfig alone stopped re-theming the whole manager UI at
+        // runtime in newer Storybook (10.4+); api.setOptions is the public way
+        api.setOptions({ theme: theme.storybookTheme });
+      } catch {
+        // older managers may not support setOptions at this point
+      }
+      applyPreviewTheme(theme.class, storageKey);
+      setCurrentTheme(theme);
+    },
+    [api, storageKey]
+  );
+
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === storageKey && e.newValue) {
         const theme = themes.find(t => t.id === e.newValue);
         if (theme) {
-          setCurrentTheme(theme);
-          applyManagerTheme(theme);
-          applyPreviewTheme(theme.class, storageKey);
+          applyTheme(theme);
         }
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [themes, storageKey]);
+  }, [themes, storageKey, applyTheme]);
 
   if (themes.length < 2 || !currentTheme) {
     return null;
@@ -39,8 +55,7 @@ const ThemeSwitcherTool = () => {
     <ThemeSwitcher
       themes={themes}
       currentTheme={currentTheme}
-      storageKey={storageKey}
-      onThemeChange={setCurrentTheme}
+      onThemeChange={applyTheme}
     />
   );
 };

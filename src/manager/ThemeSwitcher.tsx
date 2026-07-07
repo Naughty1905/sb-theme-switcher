@@ -1,38 +1,32 @@
 import React, { useState, useCallback } from 'react';
 import { IconButton, WithTooltip, TooltipLinkList } from 'storybook/internal/components';
 import type { Theme } from '../types';
-import { applyManagerTheme, applyPreviewTheme } from './utils';
 import { SunIcon, MoonIcon } from './icons';
 
 interface ThemeSwitcherProps {
   themes: Theme[];
   currentTheme: Theme;
-  storageKey: string;
   onThemeChange: (theme: Theme) => void;
 }
 
 /**
  * Toggle button for 2 themes using native button (no border, like ds-2.0)
  */
-const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, storageKey, onThemeChange }) => {
+const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
   const handleToggle = useCallback(() => {
     const currentIndex = themes.findIndex(t => t.id === currentTheme.id);
     const nextTheme = themes[(currentIndex + 1) % themes.length];
-    
-    localStorage.setItem(storageKey, nextTheme.id);
-    applyManagerTheme(nextTheme);
-    applyPreviewTheme(nextTheme.class, storageKey);
     onThemeChange(nextTheme);
-  }, [themes, currentTheme, storageKey, onThemeChange]);
+  }, [themes, currentTheme, onThemeChange]);
 
   const isDark = currentTheme.storybookTheme.base === 'dark';
   const toggleLabel = `Переключить на ${isDark ? 'светлую' : 'темную'} тему`;
 
-  const IconComponent = currentTheme.icon 
-    ? (typeof currentTheme.icon === 'string' 
+  const IconComponent = currentTheme.icon
+    ? (typeof currentTheme.icon === 'string'
         ? () => <span dangerouslySetInnerHTML={{ __html: currentTheme.icon as string }} />
         : currentTheme.icon as React.ComponentType)
     : (isDark ? SunIcon : MoonIcon);
@@ -78,19 +72,12 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, stora
 /**
  * Dropdown for 3+ themes using Storybook's built-in components
  */
-const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, storageKey, onThemeChange }) => {
-  const handleThemeSelect = useCallback((theme: Theme) => {
-    localStorage.setItem(storageKey, theme.id);
-    applyManagerTheme(theme);
-    applyPreviewTheme(theme.class, storageKey);
-    onThemeChange(theme);
-  }, [storageKey, onThemeChange]);
-
+const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange }) => {
   const links = themes.map(theme => ({
     id: theme.id,
     title: theme.title,
     active: theme.id === currentTheme.id,
-    onClick: () => handleThemeSelect(theme),
+    onClick: () => onThemeChange(theme),
     left: theme.color ? (
       <span
         style={{
@@ -98,8 +85,8 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, sto
           height: '14px',
           borderRadius: '50%',
           backgroundColor: theme.color,
-          border: theme.storybookTheme.base === 'dark' 
-            ? '1px solid rgba(255, 255, 255, 0.3)' 
+          border: theme.storybookTheme.base === 'dark'
+            ? '1px solid rgba(255, 255, 255, 0.3)'
             : '1px solid rgba(0, 0, 0, 0.2)',
           display: 'inline-block',
         }}
@@ -146,11 +133,6 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, sto
  */
 export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = (props) => {
   const { themes } = props;
-  const [, forceUpdate] = useState({});
-
-  React.useEffect(() => {
-    forceUpdate({});
-  }, [themes.length]);
 
   if (themes.length <= 2) {
     return <ThemeToggle {...props} />;

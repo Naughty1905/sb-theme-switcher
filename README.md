@@ -8,6 +8,8 @@ A Storybook addon for switching themes. One config in `main.js` — the toolbar 
 
 **English** | [🇷🇺 Русский](./README.ru.md)
 
+![Theme switching demo: manager UI and preview switch together](docs/demo-story.gif)
+
 ## Features
 
 - **One config, everything in sync** — manager UI, preview iframe and docs pages switch together; no decorators
@@ -111,6 +113,8 @@ export default preview;
 ```
 
 Requires `@storybook/addon-docs` (you already have it if you use docs).
+
+![Docs pages switching themes](docs/demo-docs.gif)
 
 ## Options
 
