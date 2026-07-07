@@ -45,10 +45,22 @@
     "theme",
     "dark-mode",
     "theme-switcher",
-    "storybook-addon"
+    "storybook-addon",
+    "storybook-addons",
+    "appearance"
   ],
   "author": "Ivan Istomin",
   "license": "MIT",
+  "storybook": {
+    "displayName": "Theme Switcher",
+    "supportedFrameworks": [
+      "react",
+      "vue",
+      "angular",
+      "web-components",
+      "html"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Naughty1905/sb-theme-switcher.git"
