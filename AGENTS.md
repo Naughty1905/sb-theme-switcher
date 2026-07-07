@@ -30,6 +30,7 @@ yarn packing      # npm publish (только по просьбе владель
 
 - **Совместимость по версиям Storybook**: 8/9/10 поддерживаются, 7 — нет. Билдер менеджера алиасит имена модулей на глобалы: SB 9/10 — `storybook/manager-api`, SB 8 — только `storybook/internal/manager-api`. Поэтому собираются два бандла (`manager` и `manager-sb8`, см. `scripts/patch-manager-sb8.mjs`), а preset в `managerEntries` выбирает нужный по `require('storybook/package.json').version`. Экспорта `./manager` в package.json нет намеренно — иначе SB 9/10 зарегистрируют энтри второй раз.
 - **Доставка опций** — только через preset-хуки `managerHead`/`previewHead`: они сериализуют опции в `<script>window.__SB_THEME_SWITCHER_OPTIONS__ = ...</script>` для обоих контекстов. Писать в `global` из preset бесполезно — Node-глобалы не попадают в браузер (баг 0.1.x).
+- **Рантайм-смена темы менеджера — только через `api.setOptions({ theme })`** (useStorybookApi в tool-компоненте). Один `addons.setConfig({ theme })` перестал перекрашивать сайдбар в SB 10.4+ — ловушка в том, что на SB 10.1 он ещё работает, поэтому регрессию видно только на свежих версиях (баг 0.2.0, исправлен в 0.2.1). setConfig оставлен для начальной темы до буста менеджера.
 - **Опции обязаны быть JSON-сериализуемыми** — React-компоненты в `icon` отбрасываются при сериализации (в `main.js` допустимы только SVG-строки; компоненты — только через ручной script в manager-head.html).
 - **Никаких runtime `require()` в браузерном коде** — в ESM-сборке под Vite это ReferenceError. Только статические импорты; новые внешние пакеты добавлять в `external` в `tsup.config.ts` (иначе вбандлится копия storybook-рантайма и аддон сломается).
 - **Не добавлять `managerEntries`/`config` в preset** — Storybook 7+ сам подхватывает `./manager` и `./preview` из `exports` package.json; дублирование даёт двойную загрузку manager-энтри.
@@ -49,6 +50,10 @@ yarn packing      # npm publish (только по просьбе владель
    `NODE_OPTIONS='--max-old-space-size=4096' npx storybook dev -p 6006 --no-open`
 4. Что проверять в браузере: кнопка `[title*="тему"]` в тулбаре; после клика `data-theme` меняется на `<html>` менеджера и iframe; ключи в localStorage; тема переживает перезагрузку и открытие `iframe.html` напрямую; docs-страница перекрашивается; консоль без ошибок.
 5. Остановить dev-сервер после проверки.
+
+## Демо-гифки
+
+`docs/demo-story.gif` и `docs/demo-docs.gif` вставлены в оба README. Записаны с `examples/storybook-10` через Playwright: настоящий курсор в скриншоты не попадает, поэтому поверх UI инжектится SVG-стрелка, движение интерполируется по кадрам, клики настоящие (`page.mouse.click`), кадры собираются в GIF пакетом `gifenc` с покадровыми задержками. При изменении UI аддона гифки нужно перезаписать тем же способом.
 
 ## Релиз
 
