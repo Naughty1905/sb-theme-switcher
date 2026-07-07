@@ -163,14 +163,6 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
 </script>
 ```
 
-## Migrating from 0.1.x
-
-In 0.1.x the addon options never reached the browser, so the setup required manual workarounds. After upgrading:
-
-1. Delete the manual `window.__SB_THEME_SWITCHER_OPTIONS__` `<script>` from `.storybook/manager-head.html` — the addon now injects the options from `main.js` by itself.
-2. Pass the options (`themes`, `defaultTheme`, `storageKey`) in `main.js` — it is the single source of truth now.
-3. `docs.container` no longer needs the `themes` prop: `container: DocsContainer` is enough.
-
 ## Troubleshooting
 
 - **Components don't change** — check you have CSS rules for `[data-theme='<class>']` and the `class` values in options match them.

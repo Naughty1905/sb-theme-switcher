@@ -163,14 +163,6 @@ function MyComponent() {
 </script>
 ```
 
-## Миграция с 0.1.x
-
-В 0.1.x опции аддона не доходили до браузера, и настройка требовала ручных обходов. После обновления:
-
-1. Удалите ручной `<script>` с `window.__SB_THEME_SWITCHER_OPTIONS__` из `.storybook/manager-head.html` — теперь аддон сам инжектит опции из `main.js`.
-2. Передавайте опции (`themes`, `defaultTheme`, `storageKey`) в `main.js` — теперь это единственный источник конфигурации.
-3. `docs.container` больше не требует prop `themes`: достаточно `container: DocsContainer`.
-
 ## Решение проблем
 
 - **Компоненты не меняются** — проверьте, что есть CSS-правила для `[data-theme='<class>']` и значения `class` в опциях им соответствуют.
