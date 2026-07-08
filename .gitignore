@@ -38,3 +38,6 @@ coverage
 # Misc
 .cache
 .temp
+
+# Local notes/specs, never committed
+.local/
