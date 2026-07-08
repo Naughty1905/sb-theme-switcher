@@ -10,7 +10,8 @@ interface ThemeSwitcherProps {
 }
 
 /**
- * Toggle button for 2 themes using native button (no border, like ds-2.0)
+ * Toggle button for 2 themes; a native button is used instead of IconButton
+ * to avoid its border
  */
 const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange }) => {
   const [isHovered, setIsHovered] = useState(false);

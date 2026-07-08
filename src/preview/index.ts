@@ -33,17 +33,10 @@ const resolveInitialThemeClass = (): string => {
   return preferredTheme?.class || (prefersDark ? 'dark-theme' : 'light-theme');
 };
 
-/**
- * Initialize theme in preview iframe
- * This runs when the preview loads
- */
 const initializePreviewTheme = () => {
   document.documentElement.setAttribute('data-theme', resolveInitialThemeClass());
 };
 
-/**
- * Listen for theme changes from manager
- */
 const observeThemeChanges = () => {
   const storageKey = getStorageKey();
 
@@ -65,15 +58,12 @@ const observeThemeChanges = () => {
   });
 };
 
-// Initialize on load
 if (typeof window !== 'undefined') {
   initializePreviewTheme();
   observeThemeChanges();
 }
 
-/**
- * Preview decorator (optional, for additional functionality)
- */
+/** Optional pass-through decorator, kept for API compatibility */
 export const withTheme = (StoryFn: any) => {
   return StoryFn();
 };
