@@ -1,7 +1,7 @@
 {
   "name": "sb-theme-switcher",
-  "version": "0.2.2",
-  "description": "A Storybook addon for switching between multiple themes with support for toggle (2 themes) and dropdown (3+ themes)",
+  "version": "0.2.3",
+  "description": "Switch themes across the whole Storybook: manager UI, preview and docs update together. Toggle for 2 themes, dropdown for 3+",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -53,6 +53,7 @@
   "license": "MIT",
   "storybook": {
     "displayName": "Theme Switcher",
+    "icon": "https://raw.githubusercontent.com/Naughty1905/sb-theme-switcher/master/docs/icon.png",
     "supportedFrameworks": [
       "react",
       "vue",
