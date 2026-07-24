@@ -1,0 +1,12 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './Button.stories';
+
+<Meta of={ButtonStories} name="MDX Docs" />
+
+# Button (MDX)
+
+Эта страница написана в MDX и, как и autodocs, перекрашивается при переключении темы через `DocsContainer`.
+
+<Canvas of={ButtonStories.Primary} />
+
+<Controls of={ButtonStories.Primary} />

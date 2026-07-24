@@ -6,8 +6,6 @@ A Storybook addon for switching themes. One config in `main.js` — the toolbar 
 ![npm version](https://img.shields.io/npm/v/sb-theme-switcher.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**English** | [🇷🇺 Русский](./README.ru.md)
-
 **[▶ Live demo](https://naughty1905.github.io/sb-theme-switcher/)**
 
 ![Theme switching demo: manager UI and preview switch together](docs/demo-story.gif)
@@ -116,6 +114,19 @@ export default preview;
 
 Requires `@storybook/addon-docs` (you already have it if you use docs).
 
+Already have a custom docs container (global styles, fonts)? `docs.container` accepts only one component, so render the addon's `DocsContainer` inside yours instead of the one from `@storybook/addon-docs/blocks` — it forwards all props and injects the current theme:
+
+```tsx
+import { DocsContainer } from 'sb-theme-switcher';
+
+export const ThemedDocsContainer = ({ children, ...props }) => (
+  <DocsContainer {...props}>
+    <GlobalStyles />
+    {children}
+  </DocsContainer>
+);
+```
+
 ![Docs pages switching themes](docs/demo-docs.gif)
 
 ## Options
@@ -179,7 +190,7 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
 
 | Storybook | Status | Notes |
 | --------- | ------ | ----- |
-| 10.x | ✅ tested on 10.1 | |
+| 10.x | ✅ tested on 10.1 and 10.4 | |
 | 9.x | ✅ tested on 9.1 | |
 | 8.x | ✅ tested on 8.6 | the addon automatically uses a dedicated manager bundle — SB 8 only aliases `storybook/internal/manager-api` |
 | 7.x | ❌ not supported | SB 7 lacks the `storybook/*` module aliases the addon relies on |

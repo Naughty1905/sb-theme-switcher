@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-07-24
+
+### Fixed
+- Docs pages crashed with `PolishedError` ("Passed an incorrect argument to a color function") on Storybook 10.4+ when the addon options did not reach the preview iframe (e.g. themes declared in a hand-written `manager-head.html` instead of the addon options in `main.js`): the `DocsContainer` fallback returned a bare `{ base }` theme with no color fields. The fallback now uses complete copies of Storybook's default light/dark themes and logs a warning explaining how to pass the themes correctly.
+
+### Added
+- MDX docs page in `examples/storybook-10` (theme switching now verified on MDX pages, not only autodocs).
+- README: recipe for composing `DocsContainer` with an existing custom docs container.
+
+### Removed
+- Russian README (`README.ru.md`): single English README from now on.
+
 ## [0.2.3] - 2026-07-08
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "sb-theme-switcher",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Switch themes across the whole Storybook: manager UI, preview and docs update together. Toggle for 2 themes, dropdown for 3+",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -22,7 +22,6 @@
     "dist",
     "preset.js",
     "README.md",
-    "README.ru.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
