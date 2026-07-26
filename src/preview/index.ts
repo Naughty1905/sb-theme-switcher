@@ -60,8 +60,3 @@ if (typeof window !== 'undefined') {
   initializePreviewTheme();
   observeThemeChanges();
 }
-
-/** Optional pass-through decorator, kept for API compatibility */
-export const withTheme = (StoryFn: any) => {
-  return StoryFn();
-};

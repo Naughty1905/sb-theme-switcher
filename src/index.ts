@@ -1,5 +1,4 @@
-export type { Theme, ThemeSwitcherOptions, StorybookTheme, ThemeState } from './types';
-export { DEFAULT_STORAGE_KEY, ADDON_ID, PARAM_KEY } from './constants';
+export type { Theme, ThemeSwitcherOptions, StorybookTheme } from './types';
+export { DEFAULT_STORAGE_KEY, ADDON_ID } from './constants';
 export { DocsContainer } from './docs/DocsContainer';
 export { useTheme } from './docs/useTheme';
-export { withTheme } from './preview';

@@ -43,15 +43,4 @@ export interface ThemeSwitcherOptions {
   defaultTheme?: string;
   /** Custom localStorage key for theme persistence */
   storageKey?: string;
-  /** Custom icons for themes (keyed by theme ID) */
-  icons?: Record<string, string | React.ComponentType>;
-}
-
-/**
- * Internal theme state
- */
-export interface ThemeState {
-  currentThemeId: string;
-  themes: Theme[];
-  storageKey: string;
 }
