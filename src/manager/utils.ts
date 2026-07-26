@@ -1,4 +1,5 @@
 import { addons } from 'storybook/manager-api';
+import { resolveTheme } from '../resolveTheme';
 import type { Theme } from '../types';
 
 export const applyManagerTheme = (theme: Theme): void => {
@@ -30,22 +31,16 @@ export const applyPreviewTheme = (themeClass: string, storageKey: string = 'sb-t
 };
 
 export const getInitialTheme = (themes: Theme[], storageKey: string, defaultThemeId?: string): Theme => {
-  const saved = localStorage.getItem(storageKey);
-  if (saved) {
-    const theme = themes.find(t => t.id === saved);
-    if (theme) return theme;
-  }
+  const theme = resolveTheme({
+    savedId: localStorage.getItem(storageKey),
+    savedClass: localStorage.getItem(`${storageKey}-class`),
+    themes,
+    defaultThemeId,
+    prefersDark: window.matchMedia('(prefers-color-scheme: dark)').matches
+  });
 
-  if (defaultThemeId) {
-    const theme = themes.find(t => t.id === defaultThemeId);
-    if (theme) return theme;
-  }
-
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const darkTheme = themes.find(t => t.storybookTheme.base === 'dark');
-  const lightTheme = themes.find(t => t.storybookTheme.base === 'light');
-
-  return (prefersDark && darkTheme) ? darkTheme : (lightTheme || themes[0]);
+  // Callers only invoke this with a non-empty themes array.
+  return theme ?? themes[0];
 };
 
 export const observePreviewIframe = (storageKey: string, themes: Theme[]): void => {

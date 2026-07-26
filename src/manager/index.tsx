@@ -66,7 +66,8 @@ if (options && options.themes && options.themes.length >= 2) {
   const initialTheme = getInitialTheme(options.themes, storageKey, options.defaultTheme);
 
   applyManagerTheme(initialTheme);
-  setTimeout(() => applyPreviewTheme(initialTheme.class, storageKey), 1000);
+  // The preview is applied by observePreviewIframe, which waits for the iframe
+  // to exist and re-applies on every load instead of guessing a delay.
   observePreviewIframe(storageKey, options.themes);
 }
 
