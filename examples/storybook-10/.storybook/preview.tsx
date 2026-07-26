@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import { DocsContainer } from 'sb-theme-switcher';
+import { DocsContainer } from 'sb-theme-switcher/docs';
 import './preview.css';
 
 const preview: Preview = {

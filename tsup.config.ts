@@ -14,6 +14,7 @@ export default defineConfig([
   {
     entry: {
       index: 'src/index.ts',
+      docs: 'src/docs/index.ts',
       manager: 'src/manager/index.tsx',
       preview: 'src/preview/index.ts',
       preset: 'src/preset.ts'

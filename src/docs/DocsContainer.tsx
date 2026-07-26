@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren, useMemo } from 'react';
 import { DocsContainer as BaseDocsContainer } from '@storybook/addon-docs/blocks';
-import { useTheme } from './useTheme';
+import { useTheme } from '../useTheme';
 import { getWindowOptions } from '../options';
 import { fallbackLightTheme, fallbackDarkTheme } from './fallbackThemes';
 import type { Theme, StorybookTheme } from '../types';

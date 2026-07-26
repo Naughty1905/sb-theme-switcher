@@ -11,6 +11,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./docs": {
+      "types": "./dist/docs.d.ts",
+      "import": "./dist/docs.mjs",
+      "require": "./dist/docs.js"
+    },
     "./preview": {
       "types": "./dist/preview.d.ts",
       "import": "./dist/preview.mjs",
@@ -31,6 +36,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test:unit": "vitest run --passWithNoTests",
+    "test:peer": "node scripts/check-optional-peer.mjs",
     "prepublishOnly": "yarn build",
     "example": "yarn build && cd examples/storybook-10 && yarn storybook",
     "example:sb9": "yarn build && cd examples/storybook-9 && yarn storybook",
