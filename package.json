@@ -29,7 +29,8 @@
     "build": "tsup && node scripts/patch-manager-sb8.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint .",
+    "test:unit": "vitest run --passWithNoTests",
     "prepublishOnly": "yarn build",
     "example": "yarn build && cd examples/storybook-10 && yarn storybook",
     "example:sb9": "yarn build && cd examples/storybook-9 && yarn storybook",
@@ -81,6 +82,7 @@
     }
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@storybook/addon-docs": "^10.1.11",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
@@ -89,10 +91,12 @@
     "eslint": "^9.18.0",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "storybook": "^10.1.11",
     "tsup": "^8.3.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.0"
   }
 }
