@@ -14,7 +14,7 @@ interface SerializableOptions {
   storageKey?: string;
 }
 
-const serializeOptions = (options: SerializableOptions): string | null => {
+export const serializeOptions = (options: SerializableOptions): string | null => {
   const { themes, defaultTheme, storageKey } = options || {};
 
   if (!Array.isArray(themes) || themes.length < 2) {
