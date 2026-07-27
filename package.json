@@ -31,7 +31,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup && node scripts/patch-manager-sb8.mjs",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsup && node scripts/patch-manager-sb8.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
