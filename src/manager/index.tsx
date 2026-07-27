@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { addons, types, useStorybookApi } from 'storybook/manager-api';
 import { ADDON_ID, TOOL_ID, DEFAULT_STORAGE_KEY } from '../constants';
 import { getWindowOptions } from '../options';
+import { resolveLabels } from '../labels';
 import type { Theme } from '../types';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { getInitialTheme, applyManagerTheme, applyPreviewTheme, observePreviewIframe } from './utils';
@@ -56,6 +57,7 @@ const ThemeSwitcherTool = () => {
       themes={themes}
       currentTheme={currentTheme}
       onThemeChange={applyTheme}
+      labels={options?.labels}
     />
   );
 };
@@ -74,7 +76,7 @@ if (options && options.themes && options.themes.length >= 2) {
 addons.register(ADDON_ID, () => {
   addons.add(TOOL_ID, {
     type: types.TOOL,
-    title: 'Переключить тему',
+    title: resolveLabels(getWindowOptions()?.labels).switchTheme,
     match: () => true,
     render: () => <ThemeSwitcherTool />
   });

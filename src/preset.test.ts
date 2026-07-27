@@ -36,4 +36,11 @@ describe('serializeOptions', () => {
     expect(result).not.toContain('</script>');
     expect(result).toContain('\\u003c');
   });
+
+  it('passes labels through', () => {
+    const result = JSON.parse(
+      serializeOptions({ themes, labels: { switchTheme: 'Переключить тему' } }) as string
+    );
+    expect(result.labels).toEqual({ switchTheme: 'Переключить тему' });
+  });
 });

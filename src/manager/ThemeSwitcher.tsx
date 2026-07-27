@@ -1,30 +1,36 @@
 import React, { useState, useCallback } from 'react';
 import { IconButton, WithTooltip, TooltipLinkList } from 'storybook/internal/components';
-import type { Theme } from '../types';
+import { resolveLabels, formatSwitchTo } from '../labels';
+import type { Theme, ThemeSwitcherLabels } from '../types';
 import { SunIcon, MoonIcon } from './icons';
 
 interface ThemeSwitcherProps {
   themes: Theme[];
   currentTheme: Theme;
   onThemeChange: (theme: Theme) => void;
+  labels?: ThemeSwitcherLabels;
 }
 
 /**
  * Toggle button for 2 themes; a native button is used instead of IconButton
  * to avoid its border
  */
-const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange }) => {
+const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange, labels }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const currentIndex = themes.findIndex(t => t.id === currentTheme.id);
+  const nextTheme = themes[(currentIndex + 1) % themes.length];
 
   const handleToggle = useCallback(() => {
-    const currentIndex = themes.findIndex(t => t.id === currentTheme.id);
-    const nextTheme = themes[(currentIndex + 1) % themes.length];
     onThemeChange(nextTheme);
-  }, [themes, currentTheme, onThemeChange]);
+  }, [nextTheme, onThemeChange]);
+
+  const resolved = resolveLabels(labels);
+  const toggleLabel = formatSwitchTo(resolved.switchToTheme, nextTheme.title);
 
   const isDark = currentTheme.storybookTheme.base === 'dark';
-  const toggleLabel = `Переключить на ${isDark ? 'светлую' : 'темную'} тему`;
 
   const IconComponent = currentTheme.icon
     ? (typeof currentTheme.icon === 'string'
@@ -35,7 +41,7 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
   return (
     <button
       key="theme-toggle"
-      title={toggleLabel}
+      title={resolved.switchTheme}
       onClick={handleToggle}
       aria-label={toggleLabel}
       onMouseEnter={() => setIsHovered(true)}
@@ -45,6 +51,8 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
       }}
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
       style={{
         background: isHovered ? (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)') : 'transparent',
         border: 'none',
@@ -54,7 +62,8 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
         alignItems: 'center',
         justifyContent: 'center',
         color: 'inherit',
-        outline: 'none',
+        outline: isFocused ? '2px solid currentColor' : 'none',
+        outlineOffset: '2px',
         borderRadius: '4px',
         transition: 'background 0.2s ease, transform 0.1s ease, opacity 0.2s ease',
         height: '28px',
@@ -73,7 +82,8 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
 /**
  * Dropdown for 3+ themes using Storybook's built-in components
  */
-const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange }) => {
+const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange, labels }) => {
+  const resolved = resolveLabels(labels);
   const links = themes.map(theme => ({
     id: theme.id,
     title: theme.title,
@@ -105,8 +115,8 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onT
     >
       <IconButton
         key="theme-dropdown"
-        title="Выбрать тему"
-        aria-label="Выбрать тему"
+        title={resolved.selectTheme}
+        aria-label={resolved.selectTheme}
       >
         {currentTheme.color && (
           <span

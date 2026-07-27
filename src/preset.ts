@@ -12,10 +12,11 @@ interface SerializableOptions {
   themes?: Array<Record<string, unknown>>;
   defaultTheme?: string;
   storageKey?: string;
+  labels?: Record<string, string>;
 }
 
 export const serializeOptions = (options: SerializableOptions): string | null => {
-  const { themes, defaultTheme, storageKey } = options || {};
+  const { themes, defaultTheme, storageKey, labels } = options || {};
 
   if (!Array.isArray(themes) || themes.length < 2) {
     return null;
@@ -28,7 +29,7 @@ export const serializeOptions = (options: SerializableOptions): string | null =>
     return typeof icon === 'string' ? { ...rest, icon } : rest;
   });
 
-  return JSON.stringify({ themes: safeThemes, defaultTheme, storageKey }).replace(/</g, '\\u003c');
+  return JSON.stringify({ themes: safeThemes, defaultTheme, storageKey, labels }).replace(/</g, '\\u003c');
 };
 
 const injectionScript = (options: SerializableOptions): string => {
