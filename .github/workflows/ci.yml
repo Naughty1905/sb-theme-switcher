@@ -52,4 +52,6 @@ jobs:
         if: failure()
         with:
           name: playwright-report-sb${{ matrix.major }}
-          path: playwright-report
+          path: |
+            playwright-report
+            test-results
