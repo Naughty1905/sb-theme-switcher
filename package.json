@@ -37,6 +37,7 @@
     "lint": "eslint .",
     "test:unit": "vitest run --passWithNoTests",
     "test:peer": "node scripts/check-optional-peer.mjs",
+    "test:smoke": "yarn build && node scripts/sync-examples.mjs ${SB_EXAMPLE:-10} && playwright test",
     "prepublishOnly": "yarn build",
     "sync-examples": "node scripts/sync-examples.mjs",
     "example": "yarn build && node scripts/sync-examples.mjs 10 && cd examples/storybook-10 && yarn storybook",
@@ -90,6 +91,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.49.0",
     "@storybook/addon-docs": "^10.1.11",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
