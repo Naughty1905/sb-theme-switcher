@@ -36,7 +36,7 @@ try {
 
     try {
       execSync(
-        `npm install --silent --no-audit --no-fund react@^19 react-dom@^19 storybook@^10 ./${tarball}`,
+        `npm install --loglevel=error --no-audit --no-fund react@^19 react-dom@^19 storybook@^10 ./${tarball}`,
         { cwd: dir, stdio: 'pipe', env }
       );
     } catch (error) {
