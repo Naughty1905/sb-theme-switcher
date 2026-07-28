@@ -1,5 +1,5 @@
 import { getStorageKey, getWindowOptions } from '../options';
-import { resolveTheme } from '../resolveTheme';
+import { resolveTheme, isThemeClassAllowed } from '../resolveTheme';
 
 /**
  * Resolve the theme class to apply on initial load.
@@ -40,14 +40,18 @@ const observeThemeChanges = () => {
 
   window.addEventListener('storage', (e: StorageEvent) => {
     if (e.key === `${storageKey}-class` && e.newValue) {
-      document.documentElement.setAttribute('data-theme', e.newValue);
+      const themes = getWindowOptions()?.themes || [];
+      if (isThemeClassAllowed(e.newValue, themes)) {
+        document.documentElement.setAttribute('data-theme', e.newValue);
+      }
     }
   });
 
   window.addEventListener('message', (event: MessageEvent) => {
     if (event.data?.type === 'sb-theme-switcher:theme-change') {
       const themeClass = event.data.themeClass;
-      if (themeClass) {
+      const themes = getWindowOptions()?.themes || [];
+      if (themeClass && isThemeClassAllowed(themeClass, themes)) {
         document.documentElement.setAttribute('data-theme', themeClass);
       }
     }
