@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Node-side preset bundle no longer carries a `"use client"` banner.
 
 ### Added
+- `ThemeSwitcherLabels` is exported from the root entry, alongside the other option types.
 - Unit tests (Vitest) for theme resolution, option serialization and labels.
 - Playwright smoke tests covering theme switching, persistence and docs re-theming, run against Storybook 8, 9 and 10.
 - CI: lint, typecheck, unit tests, the optional-peer contract, and a build + smoke matrix on every pull request.
