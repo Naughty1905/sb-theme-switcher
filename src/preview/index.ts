@@ -38,14 +38,12 @@ const initializePreviewTheme = () => {
 const observeThemeChanges = () => {
   const storageKey = getStorageKey();
 
-  // Listen for storage events (cross-tab sync)
   window.addEventListener('storage', (e: StorageEvent) => {
     if (e.key === `${storageKey}-class` && e.newValue) {
       document.documentElement.setAttribute('data-theme', e.newValue);
     }
   });
 
-  // Listen for custom events from manager (same-tab sync)
   window.addEventListener('message', (event: MessageEvent) => {
     if (event.data?.type === 'sb-theme-switcher:theme-change') {
       const themeClass = event.data.themeClass;

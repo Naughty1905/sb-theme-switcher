@@ -32,6 +32,7 @@ test.describe(`Storybook ${major}`, () => {
 
     const before = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
     expect(before).toBeTruthy();
+    const bodyBackgroundBefore = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
 
     await switchTheme(page);
 
@@ -41,6 +42,11 @@ test.describe(`Storybook ${major}`, () => {
     await expect.poll(() => readPreviewAttribute(page)).toBe(
       await page.evaluate(() => document.documentElement.getAttribute('data-theme'))
     );
+    // Regression coverage for the 0.2.0 bug (fixed in 0.2.1): deleting the
+    // api.setOptions call left every other assertion in this test passing.
+    await expect
+      .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+      .not.toBe(bodyBackgroundBefore);
 
     expect(errors).toEqual([]);
   });
@@ -59,6 +65,25 @@ test.describe(`Storybook ${major}`, () => {
     const chosen = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
 
     await page.reload();
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme')))
+      .toBe(chosen);
+  });
+
+  test('restores the chosen theme when the preview is opened directly', async ({ page }) => {
+    await page.goto('/?path=/story/example-button--primary');
+    await expect(page.locator('#storybook-preview-iframe')).toBeAttached();
+
+    const before = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+
+    await switchTheme(page);
+
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme')))
+      .not.toBe(before);
+    const chosen = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+
+    await page.goto('/iframe.html?id=example-button--primary&viewMode=story');
     await expect
       .poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme')))
       .toBe(chosen);

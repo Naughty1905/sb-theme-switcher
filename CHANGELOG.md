@@ -22,7 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - A saved theme is validated against the configured themes before it is applied. Previously `<storageKey>-class` was trusted first, so a renamed class stuck forever on standalone `iframe.html`, and a saved id pointing at a deleted theme synthesized `${id}-theme` instead of falling back to the default.
 - Keyboard focus is visible on the toggle again — the focus outline was removed with no replacement.
-- The initial preview theme is applied when the iframe loads instead of after a fixed 1000 ms delay, which raced on slow machines.
+- The initial preview theme is applied when the iframe loads instead of after a fixed 1000 ms delay, which raced on slow machines, and is now resolved through the shared `resolveTheme` (the same saved-id → saved-class → default → system-preference fallback the manager uses) instead of a raw saved-id lookup.
+- The manager and the preview iframe could disagree on the active theme on a fresh session, or whenever the addon options reached the manager but not the preview (e.g. themes declared only in a hand-written `manager-head.html`): the preview observer looked up a saved id on its own and bailed out with nothing applied when none existed, and never corrected once the two had diverged. Both sides now resolve through the same call.
 - `scripts/patch-manager-sb8.mjs` fails the build when the SB 8 import rewrite matches nothing, instead of reporting success. All SB 8 support depends on that substitution.
 - The Node-side preset bundle no longer carries a `"use client"` banner.
 

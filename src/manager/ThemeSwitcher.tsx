@@ -51,7 +51,7 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
       }}
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
-      onFocus={() => setIsFocused(true)}
+      onFocus={(event) => setIsFocused(event.currentTarget.matches(':focus-visible'))}
       onBlur={() => setIsFocused(false)}
       style={{
         background: isHovered ? (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)') : 'transparent',
@@ -79,9 +79,6 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
   );
 };
 
-/**
- * Dropdown for 3+ themes using Storybook's built-in components
- */
 const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange, labels }) => {
   const resolved = resolveLabels(labels);
   const links = themes.map(theme => ({
@@ -139,9 +136,6 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onT
   );
 };
 
-/**
- * Main theme switcher component - automatically chooses toggle or dropdown
- */
 export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = (props) => {
   const { themes } = props;
 

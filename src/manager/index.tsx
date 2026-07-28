@@ -70,7 +70,7 @@ if (options && options.themes && options.themes.length >= 2) {
   applyManagerTheme(initialTheme);
   // The preview is applied by observePreviewIframe, which waits for the iframe
   // to exist and re-applies on every load instead of guessing a delay.
-  observePreviewIframe(storageKey, options.themes);
+  observePreviewIframe(storageKey, options.themes, options.defaultTheme);
 }
 
 addons.register(ADDON_ID, () => {
