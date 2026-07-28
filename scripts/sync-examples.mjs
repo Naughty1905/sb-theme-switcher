@@ -17,6 +17,8 @@ const majors = requested ? [requested] : ['8', '9', '10'];
 const { version } = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 const staging = mkdtempSync(join(tmpdir(), 'sb-theme-switcher-sync-'));
 
+let exitCode = 0;
+
 try {
   const tarball = execSync(`npm pack --pack-destination ${staging}`, { cwd: ROOT, encoding: 'utf8' })
     .trim()
@@ -30,6 +32,13 @@ try {
     const target = join(ROOT, `examples/storybook-${major}/node_modules/sb-theme-switcher`);
 
     if (!existsSync(target)) {
+      if (requested) {
+        console.error(
+          `SB${major} has no dependencies installed: run \`yarn install\` inside examples/storybook-${major} first.`
+        );
+        exitCode = 1;
+        break;
+      }
       console.warn(`skip SB${major}: ${target} does not exist (run yarn install in that example first)`);
       continue;
     }
@@ -41,3 +50,5 @@ try {
 } finally {
   rmSync(staging, { recursive: true, force: true });
 }
+
+process.exit(exitCode);

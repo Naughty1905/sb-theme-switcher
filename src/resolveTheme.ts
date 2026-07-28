@@ -40,3 +40,6 @@ export const resolveTheme = ({
 
   return themes[0];
 };
+
+export const isThemeClassAllowed = (themeClass: string, themes: Theme[]): boolean =>
+  themes.length === 0 || themes.some(t => t.class === themeClass);

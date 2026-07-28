@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveTheme } from './resolveTheme';
+import { resolveTheme, isThemeClassAllowed } from './resolveTheme';
 import type { Theme } from './types';
 
 const light: Theme = { id: 'light', title: 'Light', class: 'light-theme', storybookTheme: { base: 'light' } };
@@ -50,5 +50,19 @@ describe('resolveTheme', () => {
 
   it('returns null when no themes are configured', () => {
     expect(resolveTheme({ savedId: 'dark', savedClass: 'dark-theme', themes: [], prefersDark: false })).toBeNull();
+  });
+});
+
+describe('isThemeClassAllowed', () => {
+  it('accepts a class that belongs to a configured theme', () => {
+    expect(isThemeClassAllowed('dark-theme', themes)).toBe(true);
+  });
+
+  it('rejects a class no configured theme declares', () => {
+    expect(isThemeClassAllowed('removed-theme', themes)).toBe(false);
+  });
+
+  it('trusts any class when no themes are configured', () => {
+    expect(isThemeClassAllowed('anything-theme', [])).toBe(true);
   });
 });
