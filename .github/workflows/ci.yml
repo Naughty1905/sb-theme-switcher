@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  verify:
+    name: Lint, typecheck, unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn typecheck
+      - run: yarn test:unit
+      - run: yarn build
+      - name: Optional peer contract
+        run: yarn test:peer
+
+  storybook:
+    name: Storybook ${{ matrix.major }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        major: [8, 9, 10]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - name: Install example dependencies
+        run: cd examples/storybook-${{ matrix.major }} && yarn install
+      - name: Sync the freshly built addon
+        run: node scripts/sync-examples.mjs ${{ matrix.major }}
+      - name: Build the example Storybook
+        run: cd examples/storybook-${{ matrix.major }} && yarn build-storybook
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Smoke test
+        env:
+          SB_EXAMPLE: ${{ matrix.major }}
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-sb${{ matrix.major }}
+          path: playwright-report
