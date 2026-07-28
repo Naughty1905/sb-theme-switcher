@@ -49,7 +49,13 @@ test.describe(`Storybook ${major}`, () => {
     await page.goto('/?path=/story/example-button--primary');
     await expect(page.locator('#storybook-preview-iframe')).toBeAttached();
 
+    const before = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+
     await switchTheme(page);
+
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme')))
+      .not.toBe(before);
     const chosen = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
 
     await page.reload();
