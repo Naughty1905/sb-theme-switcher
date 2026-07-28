@@ -42,8 +42,6 @@ test.describe(`Storybook ${major}`, () => {
     await expect.poll(() => readPreviewAttribute(page)).toBe(
       await page.evaluate(() => document.documentElement.getAttribute('data-theme'))
     );
-    // Only this assertion fails if the manager chrome stops re-theming; every
-    // other one passes on data-theme alone.
     await expect
       .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
       .not.toBe(bodyBackgroundBefore);
