@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-07-25
+
+### Removed
+- **Breaking:** `withTheme` — a pass-through decorator that never did anything. Delete it from `decorators`.
+- **Breaking:** `PARAM_KEY` — the addon never read Storybook `parameters`.
+- **Breaking:** `ThemeState` — an exported type used by nothing.
+- **Breaking:** `ThemeSwitcherOptions.icons` — never read; per-theme `icon` is the supported field.
+- `DEFAULT_THEME_IDS` — internal, was not part of the public API.
+
+### Changed
+- **Breaking:** `DocsContainer` moved to the `sb-theme-switcher/docs` subpath. `@storybook/addon-docs` is declared an optional peer, but the root entry imported it statically, so importing `useTheme` alone crashed when addon-docs was absent. `scripts/check-optional-peer.mjs` now guards this in CI.
+- **Breaking:** toolbar strings are English by default (`Switch theme`, `Select theme`, `Switch to {theme}`). Pass the new `labels` option to override them.
+- The toggle tooltip names the actual next theme instead of assuming a light/dark pair.
+
+### Fixed
+- A saved theme is validated against the configured themes before it is applied. Previously `<storageKey>-class` was trusted first, so a renamed class stuck forever on standalone `iframe.html`, and a saved id pointing at a deleted theme synthesized `${id}-theme` instead of falling back to the default.
+- Keyboard focus is visible on the toggle again — the focus outline was removed with no replacement.
+- The initial preview theme is applied when the iframe loads instead of after a fixed 1000 ms delay, which raced on slow machines.
+- `scripts/patch-manager-sb8.mjs` fails the build when the SB 8 import rewrite matches nothing, instead of reporting success. All SB 8 support depends on that substitution.
+- The Node-side preset bundle no longer carries a `"use client"` banner.
+
+### Added
+- Unit tests (Vitest) for theme resolution, option serialization and labels.
+- Playwright smoke tests covering theme switching, persistence and docs re-theming, run against Storybook 8, 9 and 10.
+- CI: lint, typecheck, unit tests, the optional-peer contract, and a build + smoke matrix on every pull request.
+- `yarn sync-examples` — Yarn 1 copies `file:` dependencies and never refreshes them, so the examples were running builds as old as 0.2.0.
+- ESLint 9 flat config; `yarn lint` works again.
+
+### Note
+The 0.2.0 entry below says the preset no longer registers `managerEntries`. That was true only briefly within that release: SB 8 support, added in the same version, reintroduced `managerEntries` to select the bundle per Storybook major. The current architecture depends on it.
+
 ## [0.2.4] - 2026-07-24
 
 ### Fixed
