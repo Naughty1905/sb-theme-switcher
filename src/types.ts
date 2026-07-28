@@ -34,6 +34,18 @@ export interface Theme {
 }
 
 /**
+ * Overrides for the toolbar strings. Defaults are English.
+ */
+export interface ThemeSwitcherLabels {
+  /** Toggle button tooltip, 2 themes. Default: 'Switch theme' */
+  switchTheme?: string;
+  /** Dropdown button tooltip, 3+ themes. Default: 'Select theme' */
+  selectTheme?: string;
+  /** Toggle aria-label; `{theme}` is replaced with the next theme title. Default: 'Switch to {theme}' */
+  switchToTheme?: string;
+}
+
+/**
  * Plugin configuration options
  */
 export interface ThemeSwitcherOptions {
@@ -43,15 +55,6 @@ export interface ThemeSwitcherOptions {
   defaultTheme?: string;
   /** Custom localStorage key for theme persistence */
   storageKey?: string;
-  /** Custom icons for themes (keyed by theme ID) */
-  icons?: Record<string, string | React.ComponentType>;
-}
-
-/**
- * Internal theme state
- */
-export interface ThemeState {
-  currentThemeId: string;
-  themes: Theme[];
-  storageKey: string;
+  /** Optional overrides for the toolbar strings */
+  labels?: ThemeSwitcherLabels;
 }

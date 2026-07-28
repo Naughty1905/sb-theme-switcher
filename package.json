@@ -1,6 +1,6 @@
 {
   "name": "sb-theme-switcher",
-  "version": "0.2.4",
+  "version": "1.0.0",
   "description": "Switch themes across the whole Storybook: manager UI, preview and docs update together. Toggle for 2 themes, dropdown for 3+",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -10,6 +10,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./docs": {
+      "types": "./dist/docs.d.ts",
+      "import": "./dist/docs.mjs",
+      "require": "./dist/docs.js"
     },
     "./preview": {
       "types": "./dist/preview.d.ts",
@@ -26,15 +31,19 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup && node scripts/patch-manager-sb8.mjs",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsup && node scripts/patch-manager-sb8.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint .",
+    "test:unit": "vitest run --passWithNoTests",
+    "test:peer": "node scripts/check-optional-peer.mjs",
+    "test:smoke": "yarn build && node scripts/sync-examples.mjs ${SB_EXAMPLE:-10} && playwright test",
     "prepublishOnly": "yarn build",
-    "example": "yarn build && cd examples/storybook-10 && yarn storybook",
-    "example:sb9": "yarn build && cd examples/storybook-9 && yarn storybook",
-    "example:sb8": "yarn build && cd examples/storybook-8 && yarn storybook",
-    "build-example": "cd examples/storybook-10 && yarn build-storybook",
+    "sync-examples": "node scripts/sync-examples.mjs",
+    "example": "yarn build && node scripts/sync-examples.mjs 10 && cd examples/storybook-10 && yarn storybook",
+    "example:sb9": "yarn build && node scripts/sync-examples.mjs 9 && cd examples/storybook-9 && yarn storybook",
+    "example:sb8": "yarn build && node scripts/sync-examples.mjs 8 && cd examples/storybook-8 && yarn storybook",
+    "build-example": "yarn build && node scripts/sync-examples.mjs 10 && cd examples/storybook-10 && yarn build-storybook",
     "packing": "npm publish",
     "packing:beta": "npm publish --tag beta"
   },
@@ -81,6 +90,8 @@
     }
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.49.0",
     "@storybook/addon-docs": "^10.1.11",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
@@ -89,10 +100,12 @@
     "eslint": "^9.18.0",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "storybook": "^10.1.11",
     "tsup": "^8.3.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.0"
   }
 }

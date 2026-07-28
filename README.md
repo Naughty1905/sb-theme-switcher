@@ -99,7 +99,7 @@ The active theme's `class` is set as a `data-theme` attribute on `<html>` of the
 
 ```typescript
 import type { Preview } from '@storybook/react';
-import { DocsContainer } from 'sb-theme-switcher';
+import { DocsContainer } from 'sb-theme-switcher/docs';
 
 const preview: Preview = {
   parameters: {
@@ -117,7 +117,7 @@ Requires `@storybook/addon-docs` (you already have it if you use docs).
 Already have a custom docs container (global styles, fonts)? `docs.container` accepts only one component, so render the addon's `DocsContainer` inside yours instead of the one from `@storybook/addon-docs/blocks` — it forwards all props and injects the current theme:
 
 ```tsx
-import { DocsContainer } from 'sb-theme-switcher';
+import { DocsContainer } from 'sb-theme-switcher/docs';
 
 export const ThemedDocsContainer = ({ children, ...props }) => (
   <DocsContainer {...props}>
@@ -129,6 +129,17 @@ export const ThemedDocsContainer = ({ children, ...props }) => (
 
 ![Docs pages switching themes](docs/demo-docs.gif)
 
+## Migrating to 1.0.0
+
+```diff
+- import { DocsContainer } from 'sb-theme-switcher';
++ import { DocsContainer } from 'sb-theme-switcher/docs';
+```
+
+- `withTheme`, `PARAM_KEY` and the `ThemeState` type were removed. `withTheme` was a no-op decorator — delete it from `decorators`.
+- `options.icons` was removed; set `icon` on the individual theme instead.
+- Toolbar strings are now English by default. To keep other wording, pass `labels` (see below).
+
 ## Options
 
 ```typescript
@@ -136,6 +147,11 @@ interface ThemeSwitcherOptions {
   themes: Theme[];        // at least 2
   defaultTheme?: string;  // theme id used before the user picks one
   storageKey?: string;    // localStorage key (default: 'sb-theme-switcher')
+  labels?: {              // toolbar strings, English by default
+    switchTheme?: string;   // toggle tooltip, default 'Switch theme'
+    selectTheme?: string;   // dropdown tooltip, default 'Select theme'
+    switchToTheme?: string; // toggle aria-label, default 'Switch to {theme}'
+  };
 }
 
 interface Theme {

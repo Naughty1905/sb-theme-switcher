@@ -8,9 +8,22 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 
+const FROM = '"storybook/manager-api"';
+const TO = '"storybook/internal/manager-api"';
+
 for (const file of ['dist/manager-sb8.js', 'dist/manager-sb8.mjs']) {
   const source = readFileSync(file, 'utf8');
-  writeFileSync(file, source.replaceAll('"storybook/manager-api"', '"storybook/internal/manager-api"'));
+
+  if (!source.includes(FROM)) {
+    console.error(
+      `[patch-manager-sb8] ${file} does not import ${FROM}.\n` +
+        'The SB8 bundle would ship an import the SB8 manager builder cannot alias.\n' +
+        'Check whether tsup output or the Storybook module names changed.'
+    );
+    process.exit(1);
+  }
+
+  writeFileSync(file, source.replaceAll(FROM, TO));
 }
 
-console.log('patched manager-sb8: storybook/manager-api -> storybook/internal/manager-api');
+console.log(`patched manager-sb8: ${FROM} -> ${TO}`);

@@ -5,16 +5,17 @@ Storybook-аддон переключения тем (`sb-theme-switcher`). Пу
 ## Команды
 
 ```bash
-yarn build        # tsup + scripts/patch-manager-sb8.mjs (правит импорты SB8-бандла)
-yarn typecheck    # tsc --noEmit
-yarn example      # собрать либу и поднять examples/storybook-10
-yarn example:sb9  # то же для examples/storybook-9
-yarn example:sb8  # то же для examples/storybook-8
-npm pack          # тарбол для локальной проверки в ds-2.0
-yarn packing      # npm publish (только по просьбе владельца)
+yarn build          # tsup + scripts/patch-manager-sb8.mjs (правит импорты SB8-бандла)
+yarn typecheck      # tsc --noEmit
+yarn lint           # eslint 9, flat config
+yarn test:unit      # vitest: resolveTheme, serializeOptions, labels
+yarn test:peer      # корневой entry не тянет @storybook/addon-docs
+yarn test:smoke     # playwright по SB_EXAMPLE (по умолчанию 10)
+yarn sync-examples  # положить свежий тарбол в examples/*/node_modules
+yarn example        # собрать + синхронизировать + поднять examples/storybook-10
+npm pack            # тарбол для локальной проверки в ds-2.0
+yarn packing        # npm publish (только по просьбе владельца)
 ```
-
-`yarn lint` сломан: ESLint 9 не читает старый `.eslintrc.json` (нужна миграция на flat config). Не чините мимоходом — это отдельная задача.
 
 ## Архитектура: три контекста исполнения
 
@@ -34,7 +35,7 @@ yarn packing      # npm publish (только по просьбе владель
 - **Рантайм-смена темы менеджера — только через `api.setOptions({ theme })`** (useStorybookApi в tool-компоненте). Один `addons.setConfig({ theme })` перестал перекрашивать сайдбар в SB 10.4+ — ловушка в том, что на SB 10.1 он ещё работает, поэтому регрессию видно только на свежих версиях (баг 0.2.0, исправлен в 0.2.1). setConfig оставлен для начальной темы до буста менеджера.
 - **Опции обязаны быть JSON-сериализуемыми** — React-компоненты в `icon` отбрасываются при сериализации (в `main.js` допустимы только SVG-строки; компоненты — только через ручной script в manager-head.html).
 - **Никаких runtime `require()` в браузерном коде** — в ESM-сборке под Vite это ReferenceError. Только статические импорты; новые внешние пакеты добавлять в `external` в `tsup.config.ts` (иначе вбандлится копия storybook-рантайма и аддон сломается).
-- **Не добавлять `managerEntries`/`config` в preset** — Storybook 7+ сам подхватывает `./manager` и `./preview` из `exports` package.json; дублирование даёт двойную загрузку manager-энтри.
+- **`managerEntries` в preset — намеренно.** Он выбирает бандл по мажору Storybook (`manager` или `manager-sb8`), потому что SB 8 алиасит только `storybook/internal/manager-api`. Экспорта `./manager` в package.json нет именно поэтому — иначе SB 9/10 зарегистрируют энтри второй раз. `./preview` и `./docs` Storybook подхватывает сам.
 - Чтение window-опций — через `src/options.ts` (`getWindowOptions`/`getStorageKey`), не дублировать.
 
 ## Контракт с потребителями
@@ -45,12 +46,13 @@ yarn packing      # npm publish (только по просьбе владель
 
 ## Проверка изменений
 
-1. `yarn build && yarn typecheck`.
-2. Интеграционно на ds-2.0: `npm pack`, в `../ds-2.0/package.json` указать `"sb-theme-switcher": "file:../storybook-theme-switcher/sb-theme-switcher-<ver>.tgz"`, `yarn install`.
-3. **Не запускать `yarn storybook` в ds-2.0** — его prebuild гоняет весь jest-suite и съедает десятки ГБ RAM. Если `.jest-test-results.json` уже есть, поднимать так:
+1. `yarn lint && yarn typecheck && yarn test:unit && yarn build && yarn test:peer`.
+2. `SB_EXAMPLE=8 yarn test:smoke`, то же для 9 и 10 — браузерный чек-лист теперь автоматизирован.
+3. **Примеры всегда синхронизировать** (`yarn sync-examples`): Yarn 1 копирует `file:`-зависимость при install и не обновляет её — без синхронизации проверяется старый билд.
+4. Интеграционно на ds-2.0: `npm pack`, в `../ds-2.0/package.json` указать `"sb-theme-switcher": "file:../storybook-theme-switcher/sb-theme-switcher-<ver>.tgz"`, `yarn install`.
+5. **Не запускать `yarn storybook` в ds-2.0** — его prebuild гоняет весь jest-suite и съедает десятки ГБ RAM. Поднимать так:
    `NODE_OPTIONS='--max-old-space-size=4096' npx storybook dev -p 6006 --no-open`
-4. Что проверять в браузере: кнопка `[title*="тему"]` в тулбаре; после клика `data-theme` меняется на `<html>` менеджера и iframe; ключи в localStorage; тема переживает перезагрузку и открытие `iframe.html` напрямую; docs-страница перекрашивается; консоль без ошибок.
-5. Остановить dev-сервер после проверки.
+6. Остановить dev-сервер после проверки.
 
 ## Демо-гифки
 

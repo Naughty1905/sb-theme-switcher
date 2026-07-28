@@ -14,14 +14,13 @@ export default defineConfig([
   {
     entry: {
       index: 'src/index.ts',
+      docs: 'src/docs/index.ts',
       manager: 'src/manager/index.tsx',
-      preview: 'src/preview/index.ts',
-      preset: 'src/preset.ts'
+      preview: 'src/preview/index.ts'
     },
     format: ['cjs', 'esm'],
     dts: true,
     sourcemap: true,
-    clean: true,
     external,
     esbuildOptions(options) {
       options.banner = {
@@ -44,5 +43,13 @@ export default defineConfig([
         js: '"use client";'
       };
     }
+  },
+  {
+    // The preset runs in Node; the "use client" banner is meaningless there.
+    entry: { preset: 'src/preset.ts' },
+    format: ['cjs', 'esm'],
+    dts: true,
+    sourcemap: true,
+    external
   }
 ]);

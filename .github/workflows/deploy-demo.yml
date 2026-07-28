@@ -33,6 +33,9 @@ jobs:
         run: |
           cd examples/storybook-10
           yarn install
+          cd ../..
+          node scripts/sync-examples.mjs 10
+          cd examples/storybook-10
           yarn build-storybook
 
       - uses: actions/upload-pages-artifact@v3

@@ -1,4 +1,5 @@
 import { addons } from 'storybook/manager-api';
+import { resolveTheme } from '../resolveTheme';
 import type { Theme } from '../types';
 
 export const applyManagerTheme = (theme: Theme): void => {
@@ -12,7 +13,7 @@ export const applyManagerTheme = (theme: Theme): void => {
   document.documentElement.setAttribute('data-theme', theme.class);
 };
 
-export const applyPreviewTheme = (themeClass: string, storageKey: string = 'sb-theme-switcher'): void => {
+export const applyPreviewTheme = (themeClass: string, storageKey: string): void => {
   localStorage.setItem(`${storageKey}-class`, themeClass);
   
   const previewIframe = document.getElementById('storybook-preview-iframe') as HTMLIFrameElement;
@@ -30,34 +31,35 @@ export const applyPreviewTheme = (themeClass: string, storageKey: string = 'sb-t
 };
 
 export const getInitialTheme = (themes: Theme[], storageKey: string, defaultThemeId?: string): Theme => {
-  const saved = localStorage.getItem(storageKey);
-  if (saved) {
-    const theme = themes.find(t => t.id === saved);
-    if (theme) return theme;
-  }
+  const theme = resolveTheme({
+    savedId: localStorage.getItem(storageKey),
+    savedClass: localStorage.getItem(`${storageKey}-class`),
+    themes,
+    defaultThemeId,
+    prefersDark: window.matchMedia('(prefers-color-scheme: dark)').matches
+  });
 
-  if (defaultThemeId) {
-    const theme = themes.find(t => t.id === defaultThemeId);
-    if (theme) return theme;
-  }
-
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const darkTheme = themes.find(t => t.storybookTheme.base === 'dark');
-  const lightTheme = themes.find(t => t.storybookTheme.base === 'light');
-
-  return (prefersDark && darkTheme) ? darkTheme : (lightTheme || themes[0]);
+  // Callers only invoke this with a non-empty themes array.
+  return theme ?? themes[0];
 };
 
-export const observePreviewIframe = (storageKey: string, themes: Theme[]): void => {
+export const observePreviewIframe = (storageKey: string, themes: Theme[], defaultThemeId?: string): void => {
   let lastIframe: HTMLIFrameElement | null = null;
 
   const applyThemeToIframe = (iframe: HTMLIFrameElement) => {
-    const savedThemeId = localStorage.getItem(storageKey);
-    const theme = savedThemeId ? themes.find(t => t.id === savedThemeId) : null;
-    
-    if (!theme) return;
-
+    // Resolved inside checkTheme (not once per iframe) so a later 'load' event
+    // on the same long-lived iframe re-reads localStorage instead of replaying
+    // whatever theme was current when the listener was first attached.
     const checkTheme = () => {
+      const theme = resolveTheme({
+        savedId: localStorage.getItem(storageKey),
+        savedClass: localStorage.getItem(`${storageKey}-class`),
+        themes,
+        defaultThemeId,
+        prefersDark: window.matchMedia('(prefers-color-scheme: dark)').matches
+      });
+      if (!theme) return;
+
       const previewDoc = iframe.contentDocument || iframe.contentWindow?.document;
       if (previewDoc?.documentElement) {
         const currentTheme = previewDoc.documentElement.getAttribute('data-theme');
