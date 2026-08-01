@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-07-29
+
+### Fixed
+- Demo GIFs did not render on the Storybook addon catalog: the README linked them with repo-relative paths, which the catalog rewrites to `github.com/<repo>/blob/main/...` — the wrong default branch for this repo, and a `blob` URL serves HTML rather than the image either way. Both are now absolute `raw.githubusercontent.com` links, which render on npm and in the catalog alike. No code changes.
+
 ## [1.0.0] - 2026-07-25
 
 ### Removed
