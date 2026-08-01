@@ -8,7 +8,7 @@ A Storybook addon for switching themes. One config in `main.js` — the toolbar 
 
 **[▶ Live demo](https://naughty1905.github.io/sb-theme-switcher/)**
 
-![Theme switching demo: manager UI and preview switch together](docs/demo-story.gif)
+![Theme switching demo: manager UI and preview switch together](https://raw.githubusercontent.com/Naughty1905/sb-theme-switcher/master/docs/demo-story.gif)
 
 ## Features
 
@@ -127,7 +127,7 @@ export const ThemedDocsContainer = ({ children, ...props }) => (
 );
 ```
 
-![Docs pages switching themes](docs/demo-docs.gif)
+![Docs pages switching themes](https://raw.githubusercontent.com/Naughty1905/sb-theme-switcher/master/docs/demo-docs.gif)
 
 ## Migrating to 1.0.0
 
