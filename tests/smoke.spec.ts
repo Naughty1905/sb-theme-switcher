@@ -2,8 +2,8 @@ import { test, expect, type Page } from '@playwright/test';
 
 const major = process.env.SB_EXAMPLE ?? '10';
 
-/** SB 8 and 9 examples ship 2 themes (toggle); SB 10 ships 3 (dropdown). */
-const isDropdown = major === '10';
+/** SB 8 and 9 examples ship 2 themes (toggle); SB 10 and 11 ship 3 (dropdown). */
+const isDropdown = Number(major) >= 10;
 
 const readPreviewAttribute = (page: Page) =>
   page.evaluate(() => {

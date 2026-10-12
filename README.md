@@ -2,7 +2,7 @@
 
 A Storybook addon for switching themes. One config in `main.js` — the toolbar button, manager UI, preview iframe and docs pages all switch together.
 
-![Storybook 8–10](https://img.shields.io/badge/Storybook-8.x%20--%2010.x-ff4785?logo=storybook)
+![Storybook 8–11](https://img.shields.io/badge/Storybook-8.x%20--%2011.x-ff4785?logo=storybook)
 ![npm version](https://img.shields.io/npm/v/sb-theme-switcher.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -76,6 +76,19 @@ export default {
 ```
 
 That's all the addon needs: the options are delivered to both the manager window and the preview iframe automatically.
+
+**CSF Next** (`definePreview`, the default in Storybook 11): Storybook no longer loads addon preview entries from `main.ts`, so add the addon to `.storybook/preview.ts` as well (`npx storybook add sb-theme-switcher` writes this for you):
+
+```typescript
+import { definePreview } from '@storybook/react-vite';
+import * as themeSwitcher from 'sb-theme-switcher/preview';
+
+export default definePreview({
+  addons: [themeSwitcher]
+});
+```
+
+Without it the toolbar still switches themes, but a standalone `iframe.html` does not restore the saved theme.
 
 ### 3. Style your components per theme
 
@@ -206,6 +219,7 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
 
 | Storybook | Status | Notes |
 | --------- | ------ | ----- |
+| 11.x | ✅ tested on 11.0.0-alpha.6 | with CSF Next, register the preview entry in `definePreview` (see [Quick start](#2-register-the-addon-with-your-themes)) |
 | 10.x | ✅ tested on 10.1 and 10.4 | |
 | 9.x | ✅ tested on 9.1 | |
 | 8.x | ✅ tested on 8.6 | the addon automatically uses a dedicated manager bundle — SB 8 only aliases `storybook/internal/manager-api` |
@@ -218,6 +232,7 @@ Options from `main.js` are serialized to JSON, so `icon` there must be an SVG st
 
 Runnable examples for each supported major live in [`examples/`](./examples):
 
+- [`examples/storybook-11`](./examples/storybook-11) — 3 themes (dropdown UI), CSF Next
 - [`examples/storybook-10`](./examples/storybook-10) — 3 themes (dropdown UI)
 - [`examples/storybook-9`](./examples/storybook-9) — 2 themes (toggle UI)
 - [`examples/storybook-8`](./examples/storybook-8) — 2 themes (toggle UI)

@@ -1,0 +1,43 @@
+import { defineMain } from '@storybook/react-vite/node';
+import { lightTheme, darkTheme, blueTheme } from './themes';
+
+export default defineMain({
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  addons: [
+    '@storybook/addon-docs',
+    {
+      name: 'sb-theme-switcher',
+      options: {
+        themes: [
+          {
+            id: 'light',
+            title: 'Light',
+            class: 'light-theme',
+            color: '#ffffff',
+            storybookTheme: lightTheme
+          },
+          {
+            id: 'dark',
+            title: 'Dark',
+            class: 'dark-theme',
+            color: '#455161',
+            storybookTheme: darkTheme
+          },
+          {
+            id: 'blue',
+            title: 'Blue Ocean',
+            class: 'blue-theme',
+            color: '#167FFB',
+            storybookTheme: blueTheme
+          }
+        ],
+        defaultTheme: 'light',
+        storageKey: 'example-theme'
+      }
+    }
+  ],
+  framework: {
+    name: '@storybook/react-vite',
+    options: {}
+  }
+});

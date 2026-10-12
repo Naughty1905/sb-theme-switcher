@@ -1,0 +1,23 @@
+{
+  "name": "sb-theme-switcher-example-storybook-11",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev -p 6111",
+    "build-storybook": "storybook build",
+    "postinstall": "node -e \"require('fs').rmSync('node_modules/sb-theme-switcher/node_modules',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "11.0.0-alpha.6",
+    "@storybook/react-vite": "11.0.0-alpha.6",
+    "@types/react": "^19.0.0",
+    "storybook": "11.0.0-alpha.6",
+    "sb-theme-switcher": "file:../..",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0"
+  }
+}
