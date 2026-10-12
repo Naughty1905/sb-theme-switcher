@@ -12,7 +12,7 @@ import { join, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const requested = process.argv[2];
-const majors = requested ? [requested] : ['8', '9', '10'];
+const majors = requested ? [requested] : ['8', '9', '10', '11'];
 
 const { version } = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 const staging = mkdtempSync(join(tmpdir(), 'sb-theme-switcher-sync-'));

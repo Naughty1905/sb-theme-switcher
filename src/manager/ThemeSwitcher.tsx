@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { IconButton, WithTooltip, TooltipLinkList } from 'storybook/internal/components';
+import { Button, WithTooltip } from 'storybook/internal/components';
 import { resolveLabels, formatSwitchTo } from '../labels';
 import type { Theme, ThemeSwitcherLabels } from '../types';
 import { SunIcon, MoonIcon } from './icons';
@@ -79,39 +79,100 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThe
   );
 };
 
+interface ThemeMenuItemProps {
+  theme: Theme;
+  active: boolean;
+  isDark: boolean;
+  accentColor?: string;
+  onSelect: () => void;
+}
+
+const ThemeMenuItem: React.FC<ThemeMenuItemProps> = ({ theme, active, isDark, accentColor, onSelect }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-current={active || undefined}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={(event) => setIsFocused(event.currentTarget.matches(':focus-visible'))}
+      onBlur={() => setIsFocused(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        width: '100%',
+        padding: '7px 10px',
+        border: 'none',
+        borderRadius: '4px',
+        background: isHovered ? (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)') : 'transparent',
+        color: active && accentColor ? accentColor : 'inherit',
+        font: 'inherit',
+        fontSize: '12px',
+        lineHeight: '18px',
+        fontWeight: active ? 700 : 400,
+        textAlign: 'left',
+        cursor: 'pointer',
+        outline: isFocused ? '2px solid currentColor' : 'none',
+        outlineOffset: '-2px'
+      }}
+    >
+      {theme.color && (
+        <span
+          style={{
+            width: '14px',
+            height: '14px',
+            flexShrink: 0,
+            borderRadius: '50%',
+            backgroundColor: theme.color,
+            border: theme.storybookTheme.base === 'dark'
+              ? '1px solid rgba(255, 255, 255, 0.3)'
+              : '1px solid rgba(0, 0, 0, 0.2)',
+            display: 'inline-block',
+          }}
+        />
+      )}
+      <span style={{ flex: 1 }}>{theme.title}</span>
+      {active && <span style={{ marginLeft: '8px' }}>✓</span>}
+    </button>
+  );
+};
+
 const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onThemeChange, labels }) => {
   const resolved = resolveLabels(labels);
-  const links = themes.map(theme => ({
-    id: theme.id,
-    title: theme.title,
-    active: theme.id === currentTheme.id,
-    onClick: () => onThemeChange(theme),
-    left: theme.color ? (
-      <span
-        style={{
-          width: '14px',
-          height: '14px',
-          borderRadius: '50%',
-          backgroundColor: theme.color,
-          border: theme.storybookTheme.base === 'dark'
-            ? '1px solid rgba(255, 255, 255, 0.3)'
-            : '1px solid rgba(0, 0, 0, 0.2)',
-          display: 'inline-block',
-        }}
-      />
-    ) : undefined,
-    right: theme.id === currentTheme.id ? <span style={{ marginLeft: '8px' }}>✓</span> : undefined
-  }));
+  const isDark = currentTheme.storybookTheme.base === 'dark';
 
   return (
     <WithTooltip
       placement="bottom"
       trigger="click"
       closeOnOutsideClick
-      tooltip={<TooltipLinkList links={links} />}
+      tooltip={({ onHide }: { onHide: () => void }) => (
+        <div style={{ padding: '4px', minWidth: '140px' }}>
+          {themes.map(theme => (
+            <ThemeMenuItem
+              key={theme.id}
+              theme={theme}
+              active={theme.id === currentTheme.id}
+              isDark={isDark}
+              accentColor={currentTheme.storybookTheme.colorSecondary}
+              onSelect={() => {
+                onThemeChange(theme);
+                onHide();
+              }}
+            />
+          ))}
+        </div>
+      )}
     >
-      <IconButton
+      <Button
         key="theme-dropdown"
+        variant="ghost"
+        padding="small"
+        ariaLabel={false}
         title={resolved.selectTheme}
         aria-label={resolved.selectTheme}
       >
@@ -131,7 +192,7 @@ const ThemeDropdown: React.FC<ThemeSwitcherProps> = ({ themes, currentTheme, onT
           />
         )}
         {currentTheme.title}
-      </IconButton>
+      </Button>
     </WithTooltip>
   );
 };

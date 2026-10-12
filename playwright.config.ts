@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 const major = process.env.SB_EXAMPLE ?? '10';
 const port = 6100 + Number(major);
+const noOpen = Number(major) >= 11 ? '' : ' --no-open';
 
 export default defineConfig({
   testDir: './tests',
@@ -18,7 +19,7 @@ export default defineConfig({
     trace: 'retain-on-failure'
   },
   webServer: {
-    command: `cd examples/storybook-${major} && npx storybook dev -p ${port} --no-open --ci`,
+    command: `cd examples/storybook-${major} && npx storybook dev -p ${port}${noOpen} --ci`,
     url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000

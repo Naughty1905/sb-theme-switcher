@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-13
+
+### Added
+- Storybook 11 support: `storybook` and `@storybook/addon-docs` peer ranges now include `^11.0.0-0` (prereleases too, so `storybook@next` installs without `ERESOLVE`). Tested on 11.0.0-alpha.6; `examples/storybook-11` (CSF Next) joins the CI smoke matrix.
+- README: registering the addon with CSF Next (`definePreview`). CSF Next — the default in Storybook 11, opt-in in 10 — does not load addon preview entries from `main.ts`, so without `import * as themeSwitcher from 'sb-theme-switcher/preview'` in `definePreview({ addons })` a standalone `iframe.html` did not restore the saved theme.
+
+### Fixed
+- The 3+ theme dropdown no longer uses `IconButton` and `TooltipLinkList`, which Storybook 11 removes — rendering an undefined component would break the dropdown there. The trigger is now `Button` (same look on 8–11) and the menu items are rendered by the addon.
+- Color indicators in the dropdown were missing on recent Storybook 10 (seen on 10.4 and 11 alpha: `TooltipLinkList` no longer renders `left`); they show again on every version.
+- Opening the dropdown on Storybook 10.1+ no longer logs deprecation warnings for `IconButton`, `TooltipLinkList`, `ListItem` and the `Button` `ariaLabel` prop.
+
 ## [1.0.1] - 2026-07-29
 
 ### Fixed
